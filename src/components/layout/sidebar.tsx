@@ -47,14 +47,11 @@ export function AppSidebar() {
             <SidebarMenuItem key={item.href}>
               <Link href={item.href}>
                 <SidebarMenuButton
-                  asChild
                   isActive={pathname.startsWith(item.href)}
                   tooltip={{ children: item.label }}
                 >
-                  <span>
                     <item.icon />
                     <span>{item.label}</span>
-                  </span>
                 </SidebarMenuButton>
               </Link>
             </SidebarMenuItem>

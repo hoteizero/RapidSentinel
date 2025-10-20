@@ -117,7 +117,7 @@ export function AlertDetailsSheet({ alert, open, onOpenChange }: AlertDetailsShe
 
   return (
     <Sheet open={open} onOpenChange={onOpenChange}>
-      <SheetContent className="w-full sm:max-w-2xl p-0">
+      <SheetContent className="w-full sm:max-w-2xl p-0" data-testid={`alert-details-sheet-${alert.id}`}>
         <div className='flex flex-col h-full'>
         <SheetHeader className="p-6">
           <SheetTitle className="font-headline text-2xl">{alert.location}</SheetTitle>
@@ -159,7 +159,7 @@ export function AlertDetailsSheet({ alert, open, onOpenChange }: AlertDetailsShe
                     <div className='space-y-2'>
                         <div className="flex justify-between items-center">
                             <Label htmlFor="summary">Alert Reasoning Summary</Label>
-                            <Button size="sm" onClick={handleGenerateSummary} disabled={loading.summary}>
+                            <Button size="sm" onClick={handleGenerateSummary} disabled={loading.summary} data-testid="gen-summary-button">
                                 {loading.summary ? <Loader2 className="animate-spin" /> : <MessageSquareQuote />}
                                 Generate Summary
                             </Button>
@@ -171,7 +171,7 @@ export function AlertDetailsSheet({ alert, open, onOpenChange }: AlertDetailsShe
                      <div className='space-y-2'>
                         <div className="flex justify-between items-center">
                             <Label htmlFor="explanation">Risk Assessment Explanation</Label>
-                            <Button size="sm" onClick={handleGenerateExplanation} disabled={loading.explanation}>
+                            <Button size="sm" onClick={handleGenerateExplanation} disabled={loading.explanation} data-testid="gen-explanation-button">
                                 {loading.explanation ? <Loader2 className="animate-spin" /> : <Lightbulb />}
                                 Explain Assessment
                             </Button>
@@ -186,7 +186,7 @@ export function AlertDetailsSheet({ alert, open, onOpenChange }: AlertDetailsShe
                             <div className="space-y-2">
                                 <Label htmlFor="role" className="text-xs">User Role</Label>
                                 <Select onValueChange={setRole} defaultValue={role}>
-                                    <SelectTrigger id="role"><SelectValue /></SelectTrigger>
+                                    <SelectTrigger id="role" data-testid="personalize-role-select"><SelectValue /></SelectTrigger>
                                     <SelectContent>
                                         <SelectItem value="citizen">Citizen</SelectItem>
                                         <SelectItem value="fire_fighter">Fire Fighter</SelectItem>
@@ -196,10 +196,10 @@ export function AlertDetailsSheet({ alert, open, onOpenChange }: AlertDetailsShe
                             </div>
                             <div className="space-y-2">
                                 <Label htmlFor="location" className="text-xs">User Location</Label>
-                                <Input id="location" value={location} onChange={e => setLocation(e.target.value)} />
+                                <Input id="location" value={location} onChange={e => setLocation(e.target.value)} data-testid="personalize-location-input" />
                             </div>
                          </div>
-                        <Button className="w-full" onClick={handlePersonalizeMessage} disabled={loading.personalization}>
+                        <Button className="w-full" onClick={handlePersonalizeMessage} disabled={loading.personalization} data-testid="gen-personalization-button">
                             {loading.personalization ? <Loader2 className="animate-spin" /> : null}
                             Generate Personalized Message
                         </Button>

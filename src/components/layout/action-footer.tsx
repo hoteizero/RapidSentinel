@@ -31,7 +31,7 @@ export function ActionFooter({ latestAlert }: ActionFooterProps) {
   };
 
   return (
-    <footer className="h-[10vh] bg-background border-t flex items-center justify-between px-6 shrink-0">
+    <footer data-testid="action-footer" className="h-[10vh] bg-background border-t flex items-center justify-between px-6 shrink-0">
       <div className='flex items-center gap-3 text-sm'>
         <AlertTriangle className="size-6 text-yellow-500 animate-pulse" />
         <div>
@@ -42,13 +42,13 @@ export function ActionFooter({ latestAlert }: ActionFooterProps) {
         </div>
       </div>
       <div className="flex items-center gap-2">
-        <Button variant="outline" size="sm" onClick={() => handleAction('確認')}>
+        <Button variant="outline" size="sm" onClick={() => handleAction('確認')} data-testid="action-confirm">
           <Check />
           確認
         </Button>
         <AlertDialog>
           <AlertDialogTrigger asChild>
-            <Button variant="outline" size="sm" >
+            <Button variant="outline" size="sm" data-testid="action-false-positive">
               <CircleX />
               誤検知
             </Button>
@@ -69,7 +69,7 @@ export function ActionFooter({ latestAlert }: ActionFooterProps) {
 
         <AlertDialog>
           <AlertDialogTrigger asChild>
-             <Button variant="destructive" className='long-press-button'>
+             <Button variant="destructive" className='long-press-button' data-testid="action-issue-alert">
                 <AlertTriangle />
                 警報発令
             </Button>
@@ -88,11 +88,11 @@ export function ActionFooter({ latestAlert }: ActionFooterProps) {
           </AlertDialogContent>
         </AlertDialog>
         
-        <Button onClick={() => handleAction('ドローン要請')}>
+        <Button onClick={() => handleAction('ドローン要請')} data-testid="action-request-drone">
           <Airplay />
           ドローン要請
         </Button>
-        <Button variant="secondary" onClick={() => handleAction('詳細')}>
+        <Button variant="secondary" onClick={() => handleAction('詳細')} data-testid="action-details">
           <ExternalLink />
           詳細
         </Button>

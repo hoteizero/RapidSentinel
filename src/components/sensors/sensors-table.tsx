@@ -41,7 +41,7 @@ export function SensorsTable({ sensors }: SensorsTableProps) {
           </TableHeader>
           <TableBody>
             {sensors.map((sensor) => (
-              <TableRow key={sensor.sensorId}>
+              <TableRow key={sensor.sensorId} data-testid={`sensor-row-${sensor.sensorId}`}>
                 <TableCell>
                   <div className="flex items-center gap-2">
                      <span className={cn("h-2.5 w-2.5 rounded-full", getStatusColor(sensor.status))}></span>

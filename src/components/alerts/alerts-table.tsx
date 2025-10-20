@@ -42,7 +42,7 @@ export function AlertsTable({ alerts }: AlertsTableProps) {
             </TableHeader>
             <TableBody>
               {sortedAlerts.map((alert) => (
-                <TableRow key={alert.id} onClick={() => setSelectedAlert(alert)} className="cursor-pointer">
+                <TableRow key={alert.id} onClick={() => setSelectedAlert(alert)} className="cursor-pointer" data-testid={`alert-row-${alert.id}`}>
                   <TableCell className="font-medium">{alert.location}</TableCell>
                   <TableCell>
                     <Badge

@@ -36,6 +36,7 @@ export function RecentAlertsCard({ alerts, onSelectAlert }: RecentAlertsCardProp
                 key={alert.id} 
                 className="flex items-start gap-3 p-2 rounded-lg hover:bg-muted cursor-pointer"
                 onClick={() => onSelectAlert(alert)}
+                data-testid={`recent-alert-item-${alert.id}`}
               >
                 <div className="p-2 mt-1 rounded-full" style={{backgroundColor: getRiskCategoryColor(alert.riskCategory)}}>
                   <Siren className="size-4 text-primary-foreground" />

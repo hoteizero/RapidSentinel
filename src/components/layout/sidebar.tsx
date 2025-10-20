@@ -22,10 +22,10 @@ import {
 } from 'lucide-react';
 
 const navItems = [
-  { href: '/dashboard', icon: LayoutDashboard, label: 'ダッシュボード' },
-  { href: '/alerts', icon: Siren, label: '警報' },
-  { href: '/sensors', icon: RadioTower, label: 'センサー' },
-  { href: '/settings', icon: Settings, label: '設定' },
+  { href: '/dashboard', icon: LayoutDashboard, label: 'ダッシュボード', testId: 'nav-dashboard' },
+  { href: '/alerts', icon: Siren, label: '警報', testId: 'nav-alerts' },
+  { href: '/sensors', icon: RadioTower, label: 'センサー', testId: 'nav-sensors' },
+  { href: '/settings', icon: Settings, label: '設定', testId: 'nav-settings' },
 ];
 
 export function AppSidebar() {
@@ -34,7 +34,7 @@ export function AppSidebar() {
   return (
     <Sidebar collapsible="icon" variant="sidebar" side="left">
       <SidebarHeader>
-        <Link href="/dashboard" className="flex items-center gap-2.5" prefetch={false}>
+        <Link href="/dashboard" className="flex items-center gap-2.5" prefetch={false} data-testid="nav-logo">
           <Shield className="h-7 w-7 text-primary" />
           <span className="text-xl font-bold font-headline tracking-tight group-data-[collapsible=icon]:hidden">
             RapidSense
@@ -49,6 +49,7 @@ export function AppSidebar() {
                 <SidebarMenuButton
                   isActive={pathname.startsWith(item.href)}
                   tooltip={{ children: item.label }}
+                  data-testid={item.testId}
                 >
                     <item.icon />
                     <span>{item.label}</span>
@@ -61,13 +62,13 @@ export function AppSidebar() {
       <SidebarFooter>
          <SidebarMenu>
             <SidebarMenuItem>
-                 <SidebarMenuButton tooltip={{ children: 'ドキュメンテーション' }}>
+                 <SidebarMenuButton tooltip={{ children: 'ドキュメンテーション' }} data-testid="nav-docs">
                     <Book/>
                     <span>ドキュメンテーション</span>
                 </SidebarMenuButton>
             </SidebarMenuItem>
             <SidebarMenuItem>
-                <SidebarMenuButton tooltip={{ children: 'サポート' }}>
+                <SidebarMenuButton tooltip={{ children: 'サポート' }} data-testid="nav-support">
                     <LifeBuoy/>
                     <span>サポート</span>
                 </SidebarMenuButton>

@@ -8,7 +8,7 @@ import { mockIncidents, mockRiskAssessments, mockSensors } from '@/lib/data';
 import type { RiskAssessment, SensorEvent, Incident } from '@/lib/types';
 import { AlertDetailsSheet } from '@/components/alerts/alert-details-sheet';
 import { Card, CardHeader, CardTitle, CardContent } from '@/components/ui/card';
-import { Info, BarChart, Bot, Droplet, Waves } from 'lucide-react';
+import { Info, BarChart, Bot, Droplet, Waves, CheckCircle2, AlertCircle, Cpu } from 'lucide-react';
 import { SystemStatusCard } from '@/components/dashboard/system-status-card';
 import { ResponsiveContainer, LineChart, CartesianGrid, XAxis, YAxis, Tooltip, Legend, Line, Bar, ComposedChart, Step } from 'recharts';
 import { ActionFooter } from '@/components/layout/action-footer';
@@ -70,13 +70,25 @@ export default function DashboardPage() {
                                     <CardTitle className='text-lg flex items-center gap-2'><Bot className='size-5'/> AI判断根拠 (XAI)</CardTitle>
                                 </CardHeader>
                                 <CardContent>
-                                     <p className='font-bold text-lg mb-2'>土砂災害リスク: <span className='text-red-500'>{selectedRiskAssessment.riskScore}%</span> (信頼度: <span className='text-blue-400'>{selectedRiskAssessment.trustScore ? `${(selectedRiskAssessment.trustScore * 100).toFixed(0)}%` : 'N/A'})</span></p>
-                                    <ul className='text-sm space-y-1 list-disc pl-5'>
-                                        <li>過去3時間累積雨量：120mm（基準80mm超過）</li>
-                                        <li>地盤水分：92%（飽和）</li>
-                                        <li>ICOT-{selectedRiskAssessment.id.slice(-3)}：{selectedRiskAssessment.icotStatus?.color_state === 'RED' ? '水没検出' : '状態正常'} (信頼度: {selectedRiskAssessment.icotStatus ? `${(selectedRiskAssessment.icotStatus.pattern_integrity * 100).toFixed(0)}%` : 'N/A'})</li>
-                                        <li>周辺3地点も同傾向</li>
-                                    </ul>
+                                     <p className='font-bold text-xl mb-3'>浸水リスク: <span className='text-red-500'>{selectedRiskAssessment.riskScore}%</span> (信頼度: <span className='text-blue-400'>{selectedRiskAssessment.trustScore ? `${(selectedRiskAssessment.trustScore * 100).toFixed(0)}%` : 'N/A'})</span></p>
+                                    <div className='space-y-2 text-sm'>
+                                        <div className='flex items-start gap-2 text-red-400'>
+                                            <CheckCircle2 className='size-4 mt-0.5 shrink-0'/>
+                                            <p><span className='font-semibold'>L1: 単変量閾値超過</span> - 河川水位が警報レベル (4.5m) を超過 (現在4.8m)</p>
+                                        </div>
+                                         <div className='flex items-start gap-2 text-red-400'>
+                                            <CheckCircle2 className='size-4 mt-0.5 shrink-0'/>
+                                            <p><span className='font-semibold'>L2: 相関異常 (マハラノビス法)</span> - 降雨量に対し水位上昇が異常に速いパターンを検出</p>
+                                        </div>
+                                         <div className='flex items-start gap-2'>
+                                            <AlertCircle className='size-4 mt-0.5 shrink-0 text-amber-500'/>
+                                            <p><span className='font-semibold'>L3: 予測モデルとの乖離</span> - 30分後の水位予測 (4.6m) を既に超過</p>
+                                        </div>
+                                        <div className='flex items-start gap-2 font-bold text-green-400 border-t border-border/50 pt-2 mt-2'>
+                                            <Cpu className='size-4 mt-0.5 shrink-0'/>
+                                            <p><span className='font-semibold'>物理的検証 (ICOT)</span> - {selectedRiskAssessment.icotStatus?.color_state === 'RED' ? 'マーカー水没（赤変）をカメラで物理的に確認' : '状態正常'} (信頼度: {selectedRiskAssessment.icotStatus ? `${(selectedRiskAssessment.icotStatus.pattern_integrity * 100).toFixed(0)}%` : 'N/A'})</p>
+                                        </div>
+                                    </div>
                                 </CardContent>
                             </Card>
                         </div>

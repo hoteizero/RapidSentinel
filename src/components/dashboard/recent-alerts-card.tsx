@@ -1,3 +1,5 @@
+'use client';
+import { useState, useEffect } from 'react';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
 import { ScrollArea } from '@/components/ui/scroll-area';
@@ -14,6 +16,12 @@ type RecentAlertsCardProps = {
 };
 
 export function RecentAlertsCard({ alerts, onSelectAlert }: RecentAlertsCardProps) {
+  const [isClient, setIsClient] = useState(false);
+
+  useEffect(() => {
+    setIsClient(true);
+  }, []);
+
   const sortedAlerts = [...alerts]
     .sort((a, b) => new Date(b.time).getTime() - new Date(a.time).getTime());
 
@@ -46,7 +54,7 @@ export function RecentAlertsCard({ alerts, onSelectAlert }: RecentAlertsCardProp
                   <p className="text-xs text-muted-foreground">{alert.riskCategory}リスク (スコア: {alert.riskScore})</p>
                 </div>
                 <p className="text-xs text-muted-foreground whitespace-nowrap">
-                  {formatDistanceToNow(new Date(alert.time), { addSuffix: true, locale: ja })}
+                  {isClient ? formatDistanceToNow(new Date(alert.time), { addSuffix: true, locale: ja }) : ''}
                 </p>
               </div>
             ))}

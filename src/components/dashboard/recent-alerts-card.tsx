@@ -10,35 +10,39 @@ import Link from 'next/link';
 
 type RecentAlertsCardProps = {
   alerts: RiskAssessment[];
+  onSelectAlert: (alert: RiskAssessment) => void;
 };
 
-export function RecentAlertsCard({ alerts }: RecentAlertsCardProps) {
+export function RecentAlertsCard({ alerts, onSelectAlert }: RecentAlertsCardProps) {
   const sortedAlerts = [...alerts]
-    .sort((a, b) => new Date(b.time).getTime() - new Date(a.time).getTime())
-    .slice(0, 5);
+    .sort((a, b) => new Date(b.time).getTime() - new Date(a.time).getTime());
 
   return (
     <Card className='h-full flex flex-col'>
-      <CardHeader className="flex flex-row items-center justify-between">
+      <CardHeader className="flex flex-row items-center justify-between pb-2">
         <div>
-          <CardTitle>警報履歴</CardTitle>
-          <CardDescription>アクティブな警報の履歴</CardDescription>
+          <CardTitle className="text-lg">警報履歴</CardTitle>
+          <CardDescription>直近24時間の警報</CardDescription>
         </div>
         <Button variant="ghost" size="sm" asChild>
             <Link href="/alerts">全て表示 <ArrowRight className="ml-2 size-4" /></Link>
         </Button>
       </CardHeader>
-      <CardContent className='flex-grow'>
-        <ScrollArea className="h-full">
-          <div className="space-y-4">
+      <CardContent className='flex-grow pt-2'>
+        <ScrollArea className="h-full pr-4 -mr-4">
+          <div className="space-y-2">
             {sortedAlerts.map((alert) => (
-              <div key={alert.id} className="flex items-start gap-4">
-                <div className="p-2 rounded-full" style={{backgroundColor: getRiskCategoryColor(alert.riskCategory)}}>
-                  <Siren className="size-5 text-primary-foreground" />
+              <div 
+                key={alert.id} 
+                className="flex items-start gap-3 p-2 rounded-lg hover:bg-muted cursor-pointer"
+                onClick={() => onSelectAlert(alert)}
+              >
+                <div className="p-2 mt-1 rounded-full" style={{backgroundColor: getRiskCategoryColor(alert.riskCategory)}}>
+                  <Siren className="size-4 text-primary-foreground" />
                 </div>
                 <div className="flex-1">
-                  <p className="font-semibold">{alert.location}</p>
-                  <p className="text-sm text-muted-foreground">{alert.riskCategory}リスク ({alert.riskScore})</p>
+                  <p className="font-semibold text-sm">{alert.location}</p>
+                  <p className="text-xs text-muted-foreground">{alert.riskCategory}リスク (スコア: {alert.riskScore})</p>
                 </div>
                 <p className="text-xs text-muted-foreground whitespace-nowrap">
                   {formatDistanceToNow(new Date(alert.time), { addSuffix: true, locale: ja })}

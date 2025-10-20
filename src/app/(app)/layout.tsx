@@ -12,10 +12,9 @@ export default function AppLayout({
       <div className="flex min-h-screen">
         <AppSidebar />
         <SidebarInset>
-          <div className="flex flex-col h-full">
+          <div className="flex flex-col h-screen">
             <Header />
             <main className="flex-1 p-4 md:p-6 lg:p-8 overflow-y-auto">
-                <h1 className="text-3xl font-bold font-headline tracking-tight mb-6">ダッシュボード</h1>
                 {children}
             </main>
           </div>

@@ -10,7 +10,7 @@ import { AlertDetailsSheet } from '@/components/alerts/alert-details-sheet';
 import { Card, CardHeader, CardTitle, CardContent } from '@/components/ui/card';
 import { Info, BarChart, Bot, Droplet, Waves, CheckCircle2, AlertCircle, Cpu } from 'lucide-react';
 import { SystemStatusCard } from '@/components/dashboard/system-status-card';
-import { ResponsiveContainer, LineChart, CartesianGrid, XAxis, YAxis, Tooltip, Legend, Line, Bar, ComposedChart, Step } from 'recharts';
+import { ResponsiveContainer, LineChart, CartesianGrid, XAxis, YAxis, Tooltip, Legend, Line, Bar, ComposedChart } from 'recharts';
 import { ActionFooter } from '@/components/layout/action-footer';
 
 const timeSeriesData = [

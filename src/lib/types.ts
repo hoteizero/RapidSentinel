@@ -1,5 +1,12 @@
 export type SensorType = "Rain" | "Wind" | "River Level" | "Seismic" | "Camera" | "Acoustic";
 
+export interface ICOTStatus {
+    recognized: boolean;
+    color_state: "RED" | "GREEN" | "TRANSPARENT" | "BLACK";
+    pattern_integrity: number;
+    last_seen_by: string;
+}
+
 export interface SensorEvent {
   sensorId: string;
   type: SensorType;
@@ -24,6 +31,8 @@ export interface RiskAssessment {
   contributingSensors: string[]; // array of sensorIds
   explanation: string;
   summary?: string;
+  icotStatus?: ICOTStatus;
+  trustScore?: number;
 }
 
 export type IncidentType = 'Flood' | 'Road Closure' | 'Traffic Jam' | 'Landslide';

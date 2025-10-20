@@ -23,6 +23,8 @@ export const mockRiskAssessments: RiskAssessment[] = [
     riskCategory: 'High',
     contributingSensors: ['sensor_003', 'sensor_004', 'sensor_008'],
     explanation: 'Heavy rainfall (25mm/h) combined with high river levels (4.8m and 5.9m) indicate a high probability of localized flooding near Shibuya River. The rate of rise in river level is critical.',
+    icotStatus: { recognized: true, color_state: 'RED', pattern_integrity: 0.98, last_seen_by: 'drone-03' },
+    trustScore: 0.92,
   },
   {
     id: 'alert_002',
@@ -32,6 +34,8 @@ export const mockRiskAssessments: RiskAssessment[] = [
     riskCategory: 'Moderate',
     contributingSensors: ['sensor_002'],
     explanation: 'Sustained high wind speeds (15.2 m/s) pose a moderate risk to temporary structures and may cause power outages. No other significant sensor readings.',
+    icotStatus: { recognized: true, color_state: 'TRANSPARENT', pattern_integrity: 1.0, last_seen_by: 'camera-12' },
+    trustScore: 0.75,
   },
   {
     id: 'alert_003',
@@ -41,6 +45,8 @@ export const mockRiskAssessments: RiskAssessment[] = [
     riskCategory: 'Low',
     contributingSensors: ['sensor_005'],
     explanation: 'Minor seismic activity detected, but well below thresholds for structural damage. All other sensors report normal conditions.',
+    icotStatus: { recognized: true, color_state: 'TRANSPARENT', pattern_integrity: 1.0, last_seen_by: 'manual-check' },
+    trustScore: 0.95,
   },
     {
     id: 'alert_004',
@@ -50,6 +56,8 @@ export const mockRiskAssessments: RiskAssessment[] = [
     riskCategory: 'Severe',
     contributingSensors: ['sensor_003', 'sensor_004', 'sensor_008'],
     explanation: 'Critical risk of flash flooding. Extreme rainfall and river levels surpassing historical highs. Immediate action required.',
+    icotStatus: { recognized: true, color_state: 'RED', pattern_integrity: 0.99, last_seen_by: 'drone-01' },
+    trustScore: 0.98,
   },
 ];
 

@@ -59,7 +59,7 @@ export default function DashboardPage() {
                                     <CardTitle className='text-lg'>地点情報</CardTitle>
                                 </CardHeader>
                                 <CardContent className='text-sm space-y-2'>
-                                    <p><span className='font-semibold'>ID:</span> {selectedRiskAssessment.id}</p>
+                                    <p><span className='font-semibold'>ID:</span> {selectedRiskAssessment.id.replace('alert', 'ICOT')}</p>
                                     <p><span className='font-semibold'>名称:</span> マンホール（海岸通3丁目）</p>
                                     <p><span className='font-semibold'>設備情報:</span> 下水道幹線・口径1200mm・設置年：2018</p>
                                     <p className='text-xs text-muted-foreground pt-2'>{selectedRiskAssessment.location}</p>
@@ -70,11 +70,11 @@ export default function DashboardPage() {
                                     <CardTitle className='text-lg flex items-center gap-2'><Bot className='size-5'/> AI判断根拠 (XAI)</CardTitle>
                                 </CardHeader>
                                 <CardContent>
-                                     <p className='font-bold text-lg mb-2'>土砂災害リスク: <span className='text-red-500'>{selectedRiskAssessment.riskScore}%</span></p>
+                                     <p className='font-bold text-lg mb-2'>土砂災害リスク: <span className='text-red-500'>{selectedRiskAssessment.riskScore}%</span> (信頼度: <span className='text-blue-400'>{selectedRiskAssessment.trustScore ? `${(selectedRiskAssessment.trustScore * 100).toFixed(0)}%` : 'N/A'})</span></p>
                                     <ul className='text-sm space-y-1 list-disc pl-5'>
                                         <li>過去3時間累積雨量：120mm（基準80mm超過）</li>
                                         <li>地盤水分：92%（飽和）</li>
-                                        <li>ICOT-2045：水没検出（信頼度92%）</li>
+                                        <li>ICOT-{selectedRiskAssessment.id.slice(-3)}：{selectedRiskAssessment.icotStatus?.color_state === 'RED' ? '水没検出' : '状態正常'} (信頼度: {selectedRiskAssessment.icotStatus ? `${(selectedRiskAssessment.icotStatus.pattern_integrity * 100).toFixed(0)}%` : 'N/A'})</li>
                                         <li>周辺3地点も同傾向</li>
                                     </ul>
                                 </CardContent>

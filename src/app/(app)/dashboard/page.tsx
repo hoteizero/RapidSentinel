@@ -10,17 +10,17 @@ import { AlertDetailsSheet } from '@/components/alerts/alert-details-sheet';
 import { Card, CardHeader, CardTitle, CardContent } from '@/components/ui/card';
 import { Info, BarChart, Bot, Droplet, Waves } from 'lucide-react';
 import { SystemStatusCard } from '@/components/dashboard/system-status-card';
-import { ResponsiveContainer, LineChart, CartesianGrid, XAxis, YAxis, Tooltip, Legend, Line, Bar } from 'recharts';
+import { ResponsiveContainer, LineChart, CartesianGrid, XAxis, YAxis, Tooltip, Legend, Line, Bar, ComposedChart, Step } from 'recharts';
 import { ActionFooter } from '@/components/layout/action-footer';
 
 const timeSeriesData = [
-  { time: '6h ago', 水位: 4.2, 雨量: 5 },
-  { time: '5h ago', 水位: 4.3, 雨量: 8 },
-  { time: '4h ago', 水位: 4.5, 雨量: 12 },
-  { time: '3h ago', 水位: 4.6, 雨量: 20 },
-  { time: '2h ago', 水位: 4.7, 雨量: 15 },
-  { time: '1h ago', 水位: 4.75, 雨量: 10 },
-  { time: 'Now', 水位: 4.8, 雨量: 8 },
+  { time: '6h ago', 水位: 4.2, 雨量: 5, ICOT状態: 0 },
+  { time: '5h ago', 水位: 4.3, 雨量: 8, ICOT状態: 0 },
+  { time: '4h ago', 水位: 4.5, 雨量: 12, ICOT状態: 0 },
+  { time: '3h ago', 水位: 4.6, 雨量: 20, ICOT状態: 1 },
+  { time: '2h ago', 水位: 4.7, 雨量: 15, ICOT状態: 1 },
+  { time: '1h ago', 水位: 4.75, 雨量: 10, ICOT状態: 1 },
+  { time: 'Now', 水位: 4.8, 雨量: 8, ICOT状態: 1 },
 ];
 
 export default function DashboardPage() {
@@ -34,7 +34,7 @@ export default function DashboardPage() {
   const selectedRiskAssessment = selectedItem && 'riskScore' in selectedItem ? selectedItem : null;
 
   return (
-    <div className="flex flex-col h-full -m-8">
+    <div className="flex flex-col h-full -m-4 md:-m-6 lg:-m-8">
         <div className='flex flex-1 overflow-hidden'>
             {/* Left Pane */}
             <aside className="w-[30%] flex flex-col gap-4 p-4 border-r bg-muted/20">
@@ -86,16 +86,18 @@ export default function DashboardPage() {
                             </CardHeader>
                              <CardContent className='flex-grow'>
                                  <ResponsiveContainer width="100%" height="100%">
-                                     <LineChart data={timeSeriesData} margin={{ top: 5, right: 20, left: 0, bottom: 5 }}>
+                                     <ComposedChart data={timeSeriesData} margin={{ top: 5, right: 20, left: 0, bottom: 5 }}>
                                          <CartesianGrid strokeDasharray="3 3" />
                                          <XAxis dataKey="time" />
                                          <YAxis yAxisId="left" label={{ value: '水位 (m)', angle: -90, position: 'insideLeft' }} />
                                          <YAxis yAxisId="right" orientation="right" label={{ value: '雨量 (mm/h)', angle: -90, position: 'insideRight' }} />
+                                         <YAxis yAxisId="step" orientation="right" domain={[0,1]} ticks={[0,1]} tickFormatter={(val) => val === 1 ? '異常': '正常'}/>
                                          <Tooltip />
                                          <Legend />
-                                         <Line yAxisId="left" type="monotone" dataKey="水位" stroke="hsl(var(--chart-1))" strokeWidth={2} dot={<Waves className='size-3'/>} name="水位 (m)" />
+                                         <Line yAxisId="left" type="monotone" dataKey="水位" stroke="hsl(var(--chart-1))" strokeWidth={2} name="水位 (m)" />
                                          <Bar yAxisId="right" dataKey="雨量" fill="hsl(var(--chart-2))" name="雨量 (mm/h)" barSize={20} />
-                                     </LineChart>
+                                         <Line yAxisId="step" dataKey="ICOT状態" stroke="hsl(var(--chart-5))" strokeWidth={2} name="ICOT状態" step="center" />
+                                     </ComposedChart>
                                  </ResponsiveContainer>
                             </CardContent>
                         </Card>

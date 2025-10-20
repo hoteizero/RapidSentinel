@@ -68,12 +68,12 @@ export function DisasterMap({ sensors, incidents, alerts, onSelectItem }: Disast
     );
   }
 
-  const center = { lat: 35.68, lon: 139.69 };
+  const center = { lat: 35.68, lng: 139.69 };
 
   return (
     <APIProvider apiKey={apiKey}>
       <Map
-        defaultCenter={{ lat: center.lat, lng: center.lon }}
+        defaultCenter={center}
         defaultZoom={12}
         mapId="RAPIDSENSE_MAP_ID"
         fullscreenControl={false}

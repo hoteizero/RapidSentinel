@@ -1,3 +1,4 @@
+
 'use client';
 
 import Link from 'next/link';
@@ -19,10 +20,12 @@ import {
   Shield,
   LifeBuoy,
   Book,
+  BrainCircuit,
 } from 'lucide-react';
 
 const navItems = [
   { href: '/dashboard', icon: LayoutDashboard, label: 'ダッシュボード', testId: 'nav-dashboard' },
+  { href: '/xai', icon: BrainCircuit, label: 'AI判断根拠', testId: 'nav-xai' },
   { href: '/alerts', icon: Siren, label: '警報', testId: 'nav-alerts' },
   { href: '/sensors', icon: RadioTower, label: 'センサー', testId: 'nav-sensors' },
   { href: '/settings', icon: Settings, label: '設定', testId: 'nav-settings' },

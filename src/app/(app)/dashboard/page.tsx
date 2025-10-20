@@ -1,3 +1,4 @@
+
 'use client';
 import { useState } from 'react';
 import { DisasterMap } from '@/components/dashboard/disaster-map';
@@ -65,28 +66,13 @@ export default function DashboardPage() {
                             </Card>
                              <Card className='col-span-2'>
                                 <CardHeader>
-                                    <CardTitle className='text-lg flex items-center gap-2'><Bot className='size-5'/> AI判断根拠 (XAI)</CardTitle>
+                                    <CardTitle className='text-lg flex items-center gap-2'><Bot className='size-5'/> 総合評価</CardTitle>
                                 </CardHeader>
                                 <CardContent>
                                      <p className='font-bold text-xl mb-3'>浸水リスク: <span className='text-red-500'>{selectedRiskAssessment.riskScore}%</span> (信頼度: <span className='text-blue-400'>{selectedRiskAssessment.trustScore ? `${(selectedRiskAssessment.trustScore * 100).toFixed(0)}%` : 'N/A'})</span></p>
-                                    <div className='space-y-2 text-sm'>
-                                        <div className='flex items-start gap-2 text-red-400'>
-                                            <CheckCircle2 className='size-4 mt-0.5 shrink-0'/>
-                                            <p><span className='font-semibold'>L1: 単変量閾値超過</span> - 河川水位が警報レベル (4.5m) を超過 (現在4.8m)</p>
-                                        </div>
-                                         <div className='flex items-start gap-2 text-red-400'>
-                                            <CheckCircle2 className='size-4 mt-0.5 shrink-0'/>
-                                            <p><span className='font-semibold'>L2: 相関異常 (マハラノビス法)</span> - 降雨量に対し水位上昇が異常に速いパターンを検出</p>
-                                        </div>
-                                         <div className='flex items-start gap-2'>
-                                            <AlertCircle className='size-4 mt-0.5 shrink-0 text-amber-500'/>
-                                            <p><span className='font-semibold'>L3: 予測モデルとの乖離</span> - 30分後の水位予測 (4.6m) を既に超過</p>
-                                        </div>
-                                        <div className='flex items-start gap-2 font-bold text-green-400 border-t border-border/50 pt-2 mt-2'>
-                                            <Cpu className='size-4 mt-0.5 shrink-0'/>
-                                            <p><span className='font-semibold'>物理的検証 (ICOT)</span> - {selectedRiskAssessment.icotStatus?.color_state === 'RED' ? 'マーカー水没（赤変）をカメラで物理的に確認' : '状態正常'} (信頼度: {selectedRiskAssessment.icotStatus ? `${(selectedRiskAssessment.icotStatus.pattern_integrity * 100).toFixed(0)}%` : 'N/A'})</p>
-                                        </div>
-                                    </div>
+                                     <p className='text-muted-foreground text-sm'>
+                                        AIの多層的な分析により、リスクが「{selectedRiskAssessment.riskCategory}」と判断されました。詳細は「AI判断根拠」ページで確認してください。
+                                     </p>
                                 </CardContent>
                             </Card>
                         </div>

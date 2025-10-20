@@ -2,13 +2,11 @@
 import { useState } from 'react';
 import { DisasterMap } from '@/components/dashboard/disaster-map';
 import { RecentAlertsCard } from '@/components/dashboard/recent-alerts-card';
-import { RiskOverviewCard } from '@/components/dashboard/risk-overview-card';
-import { SensorStatusCard } from '@/components/dashboard/sensor-status-card';
 import { mockIncidents, mockRiskAssessments, mockSensors } from '@/lib/data';
 import type { RiskAssessment, SensorEvent, Incident } from '@/lib/types';
 import { AlertDetailsSheet } from '@/components/alerts/alert-details-sheet';
 import { Card, CardHeader, CardTitle, CardContent } from '@/components/ui/card';
-import { Info, BarChart, Bot, Droplet, Waves, CheckCircle2, AlertCircle, Cpu } from 'lucide-react';
+import { Info, BarChart, Bot, CheckCircle2, AlertCircle, Cpu, Waypoints } from 'lucide-react';
 import { SystemStatusCard } from '@/components/dashboard/system-status-card';
 import { ResponsiveContainer, LineChart, CartesianGrid, XAxis, YAxis, Tooltip, Legend, Line, Bar, ComposedChart } from 'recharts';
 import { ActionFooter } from '@/components/layout/action-footer';
@@ -131,8 +129,8 @@ export default function DashboardPage() {
         <ActionFooter latestAlert={highestRisk} />
 
        <AlertDetailsSheet 
-        alert={selectedItem && 'riskScore' in selectedItem ? selectedItem : null}
-        open={!!(selectedItem && 'riskScore' in selectedItem && !selectedRiskAssessment)}
+        alert={selectedItem && 'riskScore' in selectedItem && !selectedRiskAssessment ? selectedItem as RiskAssessment : null}
+        open={!!(selectedItem && 'riskScore' in selectedItem)}
         onOpenChange={(isOpen) => {
             if (!isOpen) {
                 setSelectedItem(null);

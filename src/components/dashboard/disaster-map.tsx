@@ -5,7 +5,7 @@ import type { SensorEvent, Incident, RiskAssessment } from '@/lib/types';
 import { useState } from 'react';
 import { Card, CardContent, CardHeader, CardTitle } from '../ui/card';
 import { Button } from '../ui/button';
-import { AlertTriangle, Camera, RadioTower, Siren, TrafficCone, Waves, Wind } from 'lucide-react';
+import { AlertTriangle, Camera, RadioTower, Siren, TrafficCone, Wind, Waypoints } from 'lucide-react';
 import { cn } from '@/lib/utils';
 
 type DisasterMapProps = {
@@ -17,9 +17,9 @@ type DisasterMapProps = {
 
 function getSensorIcon(type: SensorEvent['type']) {
     switch(type) {
-        case 'Rain': return <Waves className="size-4 text-white" />;
+        case 'Rain': return <Waypoints className="size-4 text-white" />;
         case 'Wind': return <Wind className="size-4 text-white" />;
-        case 'River Level': return <Waves className="size-4 text-white" />;
+        case 'River Level': return <Waypoints className="size-4 text-white" />;
         case 'Seismic': return <Siren className="size-4 text-white" />;
         case 'Camera': return <Camera className="size-4 text-white" />;
         default: return <RadioTower className="size-4 text-white" />;

@@ -4,6 +4,7 @@ import { ScrollArea } from '@/components/ui/scroll-area';
 import { getRiskCategoryColor } from '@/lib/data';
 import type { RiskAssessment } from '@/lib/types';
 import { formatDistanceToNow } from 'date-fns';
+import { ja } from 'date-fns/locale';
 import { ArrowRight, Siren } from 'lucide-react';
 import Link from 'next/link';
 
@@ -17,18 +18,18 @@ export function RecentAlertsCard({ alerts }: RecentAlertsCardProps) {
     .slice(0, 5);
 
   return (
-    <Card>
+    <Card className='h-full flex flex-col'>
       <CardHeader className="flex flex-row items-center justify-between">
         <div>
-          <CardTitle>Recent Alerts</CardTitle>
-          <CardDescription>Highest priority active alerts</CardDescription>
+          <CardTitle>警報履歴</CardTitle>
+          <CardDescription>アクティブな警報の履歴</CardDescription>
         </div>
         <Button variant="ghost" size="sm" asChild>
-            <Link href="/alerts">View All <ArrowRight className="ml-2 size-4" /></Link>
+            <Link href="/alerts">全て表示 <ArrowRight className="ml-2 size-4" /></Link>
         </Button>
       </CardHeader>
-      <CardContent>
-        <ScrollArea className="h-64">
+      <CardContent className='flex-grow'>
+        <ScrollArea className="h-full">
           <div className="space-y-4">
             {sortedAlerts.map((alert) => (
               <div key={alert.id} className="flex items-start gap-4">
@@ -37,10 +38,10 @@ export function RecentAlertsCard({ alerts }: RecentAlertsCardProps) {
                 </div>
                 <div className="flex-1">
                   <p className="font-semibold">{alert.location}</p>
-                  <p className="text-sm text-muted-foreground">{alert.riskCategory} Risk ({alert.riskScore})</p>
+                  <p className="text-sm text-muted-foreground">{alert.riskCategory}リスク ({alert.riskScore})</p>
                 </div>
                 <p className="text-xs text-muted-foreground whitespace-nowrap">
-                  {formatDistanceToNow(new Date(alert.time), { addSuffix: true })}
+                  {formatDistanceToNow(new Date(alert.time), { addSuffix: true, locale: ja })}
                 </p>
               </div>
             ))}

@@ -7,12 +7,12 @@ import { Card, CardContent, CardHeader, CardTitle } from '../ui/card';
 import { Button } from '../ui/button';
 import { AlertTriangle, Camera, RadioTower, Siren, TrafficCone, Waves, Wind } from 'lucide-react';
 import { cn } from '@/lib/utils';
-import { getRiskCategoryColor } from '@/lib/data';
 
 type DisasterMapProps = {
   sensors: SensorEvent[];
   incidents: Incident[];
   alerts: RiskAssessment[];
+  onSelectItem: (item: SensorEvent | Incident | RiskAssessment) => void;
 };
 
 function getSensorIcon(type: SensorEvent['type']) {
@@ -35,9 +35,14 @@ function getIncidentIcon(type: Incident['type']) {
     }
 }
 
-export function DisasterMap({ sensors, incidents, alerts }: DisasterMapProps) {
+export function DisasterMap({ sensors, incidents, alerts, onSelectItem }: DisasterMapProps) {
   const apiKey = process.env.NEXT_PUBLIC_GOOGLE_MAPS_API_KEY;
   const [selected, setSelected] = useState<SensorEvent | Incident | RiskAssessment | null>(null);
+
+  const handleMarkerClick = (item: SensorEvent | Incident | RiskAssessment) => {
+    setSelected(item);
+    onSelectItem(item);
+  };
 
   if (!apiKey) {
     return (
@@ -46,17 +51,17 @@ export function DisasterMap({ sensors, incidents, alerts }: DisasterMapProps) {
             <div className="mx-auto bg-card p-3 rounded-full">
                 <AlertTriangle className="size-12 text-destructive" />
             </div>
-          <CardTitle>Map Configuration Needed</CardTitle>
+          <CardTitle>地図の表示には設定が必要です</CardTitle>
         </CardHeader>
         <CardContent>
           <p className="text-muted-foreground mb-4">
-            To display the interactive map, please provide a Google Maps API key.
+            インタラクティブマップを表示するには、Google Maps APIキーを提供してください。
           </p>
           <p className="text-sm text-muted-foreground/80">
-            Rename the `env.local.example` file to `.env.local` and add your key to the `NEXT_PUBLIC_GOOGLE_MAPS_API_KEY` variable.
+            `.env.local.example` ファイルを `.env.local` にリネームし、`NEXT_PUBLIC_GOOGLE_MAPS_API_KEY` 変数にキーを追加してください。
           </p>
           <Button asChild className="mt-4">
-            <a href="https://console.cloud.google.com/google/maps-apis/overview" target="_blank" rel="noopener noreferrer">Get API Key</a>
+            <a href="https://console.cloud.google.com/google/maps-apis/overview" target="_blank" rel="noopener noreferrer">APIキーを取得</a>
           </Button>
         </CardContent>
       </Card>
@@ -77,18 +82,18 @@ export function DisasterMap({ sensors, incidents, alerts }: DisasterMapProps) {
         className="h-full w-full"
       >
         {sensors.map((sensor) => (
-          <AdvancedMarker key={sensor.sensorId} position={{ lat: sensor.lat, lng: sensor.lon }} onClick={() => setSelected(sensor)}>
+          <AdvancedMarker key={sensor.sensorId} position={{ lat: sensor.lat, lng: sensor.lon }} onClick={() => handleMarkerClick(sensor)}>
              <Pin background={'#1E88E5'} glyph={getSensorIcon(sensor.type)} borderColor={'#1E88E5'} />
           </AdvancedMarker>
         ))}
         {incidents.map((incident) => (
-             <AdvancedMarker key={incident.id} position={{ lat: incident.lat, lng: incident.lon }} onClick={() => setSelected(incident)}>
+             <AdvancedMarker key={incident.id} position={{ lat: incident.lat, lng: incident.lon }} onClick={() => handleMarkerClick(incident)}>
                 {getIncidentIcon(incident.type)}
              </AdvancedMarker>
         ))}
 
         {selected && (
-          <InfoWindow position={{ lat: selected.lat, lng: selected.lon }} onCloseClick={() => setSelected(null)}>
+          <InfoWindow position={{ lat: selected.lat, lng: 'lon' in selected ? selected.lon : selected.lng }} onCloseClick={() => setSelected(null)}>
             <div className="p-2 w-64">
                 {'sensorId' in selected ? (
                     <>
@@ -96,6 +101,12 @@ export function DisasterMap({ sensors, incidents, alerts }: DisasterMapProps) {
                         <p className="text-sm text-muted-foreground">{selected.type}</p>
                         <p className="text-lg font-mono mt-2">{selected.value} {selected.unit}</p>
                         <p className={cn("text-xs font-semibold", selected.status === 'online' ? 'text-green-500' : 'text-red-500')}>{selected.status.toUpperCase()}</p>
+                    </>
+                ) : 'riskScore' in selected ? (
+                     <>
+                        <h4 className="font-bold text-md">{selected.location}</h4>
+                        <p className="text-sm text-muted-foreground">{selected.riskCategory} Risk</p>
+                        <p className="text-lg font-mono mt-2">{selected.riskScore}</p>
                     </>
                 ) : (
                     <>

@@ -22,10 +22,10 @@ import {
 } from 'lucide-react';
 
 const navItems = [
-  { href: '/dashboard', icon: LayoutDashboard, label: 'Dashboard' },
-  { href: '/alerts', icon: Siren, label: 'Alerts' },
-  { href: '/sensors', icon: RadioTower, label: 'Sensors' },
-  { href: '/settings', icon: Settings, label: 'Settings' },
+  { href: '/dashboard', icon: LayoutDashboard, label: 'ダッシュボード' },
+  { href: '/alerts', icon: Siren, label: '警報' },
+  { href: '/sensors', icon: RadioTower, label: 'センサー' },
+  { href: '/settings', icon: Settings, label: '設定' },
 ];
 
 export function AppSidebar() {
@@ -62,15 +62,15 @@ export function AppSidebar() {
       <SidebarFooter>
          <SidebarMenu>
             <SidebarMenuItem>
-                 <SidebarMenuButton tooltip={{ children: 'Documentation' }}>
+                 <SidebarMenuButton tooltip={{ children: 'ドキュメンテーション' }}>
                     <Book/>
-                    <span>Documentation</span>
+                    <span>ドキュメンテーション</span>
                 </SidebarMenuButton>
             </SidebarMenuItem>
             <SidebarMenuItem>
-                <SidebarMenuButton tooltip={{ children: 'Support' }}>
+                <SidebarMenuButton tooltip={{ children: 'サポート' }}>
                     <LifeBuoy/>
-                    <span>Support</span>
+                    <span>サポート</span>
                 </SidebarMenuButton>
             </SidebarMenuItem>
         </SidebarMenu>

@@ -16,14 +16,15 @@ import { format } from 'date-fns';
 import { ja } from 'date-fns/locale';
 
 export function Header() {
-    const [time, setTime] = useState(new Date());
+    const [time, setTime] = useState<Date | null>(null);
 
     useEffect(() => {
+        setTime(new Date());
         const timer = setInterval(() => setTime(new Date()), 1000);
         return () => clearInterval(timer);
     }, []);
 
-    const formattedTime = format(time, 'yyyy年M月d日 HH:mm:ss', { locale: ja });
+    const formattedTime = time ? format(time, 'yyyy年M月d日 HH:mm:ss', { locale: ja }) : '--年--月--日 --:--:--';
 
   return (
     <header className="sticky top-0 z-10 flex h-[8vh] items-center gap-4 border-b bg-background/80 backdrop-blur-sm px-4 md:px-6 shrink-0">

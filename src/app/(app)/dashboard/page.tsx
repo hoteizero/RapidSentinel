@@ -7,8 +7,7 @@ import { mockIncidents, mockRiskAssessments, mockSensors } from '@/lib/data';
 import type { RiskAssessment, SensorEvent, Incident } from '@/lib/types';
 import { AlertDetailsSheet } from '@/components/alerts/alert-details-sheet';
 import { Card, CardHeader, CardTitle, CardContent } from '@/components/ui/card';
-import { Info, BarChart, Bot, CheckCircle2, AlertCircle, Cpu, Waypoints } from 'lucide-react';
-import { SystemStatusCard } from '@/components/dashboard/system-status-card';
+import { Info, BarChart, Bot, Waypoints } from 'lucide-react';
 import { ResponsiveContainer, LineChart, CartesianGrid, XAxis, YAxis, Tooltip, Legend, Line, Bar, ComposedChart } from 'recharts';
 import { ActionFooter } from '@/components/layout/action-footer';
 
@@ -37,14 +36,11 @@ export default function DashboardPage() {
         <div className='flex flex-1 overflow-hidden'>
             {/* Left Pane */}
             <aside className="w-[30%] flex flex-col gap-4 p-4 border-r bg-muted/20">
-                <div className="h-[45%] rounded-lg overflow-hidden shadow-md">
+                <div className="h-[55%] rounded-lg overflow-hidden shadow-md">
                 <DisasterMap sensors={mockSensors} incidents={mockIncidents} alerts={mockRiskAssessments} onSelectItem={handleSelectItem} />
                 </div>
-                <div className='h-[35%]'>
+                <div className='h-[45%]'>
                     <RecentAlertsCard alerts={mockRiskAssessments} onSelectAlert={handleSelectItem} />
-                </div>
-                <div className='h-[20%]'>
-                    <SystemStatusCard />
                 </div>
             </aside>
 

@@ -21,6 +21,7 @@ import {
   LifeBuoy,
   Book,
   BrainCircuit,
+  Server,
 } from 'lucide-react';
 
 const navItems = [
@@ -28,6 +29,7 @@ const navItems = [
   { href: '/xai', icon: BrainCircuit, label: 'AI判断根拠', testId: 'nav-xai' },
   { href: '/alerts', icon: Siren, label: '警報', testId: 'nav-alerts' },
   { href: '/sensors', icon: RadioTower, label: 'センサー', testId: 'nav-sensors' },
+  { href: '/status', icon: Server, label: 'システム状態', testId: 'nav-status' },
   { href: '/settings', icon: Settings, label: '設定', testId: 'nav-settings' },
 ];
 

@@ -106,7 +106,7 @@ export default function AnalysisPage() {
           <CardContent className="h-72">
              <ResponsiveContainer width="100%" height="100%">
               <PieChart>
-                <Pie data={falsePositiveData} dataKey="value" nameKey="name" cx="50%" cy="50%" innerRadius={60} outerRadius={80} label={(props) => `${props.name} ${props.value}%`}>
+                <Pie data={falsePositiveData} dataKey="value" nameKey="name" cx="50%" cy="50%" innerRadius={60} outerRadius={80} labelLine={false} label={({ name, percent }) => `${name} ${(percent * 100).toFixed(0)}%`}>
                     {falsePositiveData.map((entry) => (
                         <Cell key={`cell-${entry.name}`} fill={entry.color} />
                     ))}

@@ -21,6 +21,10 @@ import { useToast } from '@/hooks/use-toast';
 import { Separator } from '../ui/separator';
 
 const settingsSchema = z.object({
+  sensorFusionWeight: z.number().min(0).max(100),
+  lofWeight: z.number().min(0).max(100),
+  mahalanobisWeight: z.number().min(0).max(100),
+  arimaWeight: z.number().min(0).max(100),
   moderateThreshold: z.number().min(0).max(100),
   highThreshold: z.number().min(0).max(100),
   severeThreshold: z.number().min(0).max(100),
@@ -37,6 +41,10 @@ export function SettingsForm() {
   const form = useForm<SettingsFormValues>({
     resolver: zodResolver(settingsSchema),
     defaultValues: {
+      sensorFusionWeight: 40,
+      lofWeight: 20,
+      mahalanobisWeight: 25,
+      arimaWeight: 15,
       moderateThreshold: 50,
       highThreshold: 75,
       severeThreshold: 90,
@@ -60,12 +68,111 @@ export function SettingsForm() {
       <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-8">
         <Card>
           <CardHeader>
+            <CardTitle>AI Engine Component Weights</CardTitle>
+            <CardDescription>
+              Adjust the weight of each AI component in the final risk score calculation.
+            </CardDescription>
+          </CardHeader>
+          <CardContent className="space-y-8">
+            <FormField
+              control={form.control}
+              name="sensorFusionWeight"
+              render={({ field }) => (
+                <FormItem>
+                  <div className="flex justify-between items-center">
+                    <FormLabel>1. Sensor Fusion (Noise/Fault Detection)</FormLabel>
+                    <span className="text-sm font-mono p-1 px-2 rounded-md bg-muted">{field.value}%</span>
+                  </div>
+                  <FormControl>
+                    <Slider
+                      min={0}
+                      max={100}
+                      step={5}
+                      onValueChange={(value) => field.onChange(value[0])}
+                      value={[field.value]}
+                    />
+                  </FormControl>
+                  <FormMessage />
+                </FormItem>
+              )}
+            />
+            <FormField
+              control={form.control}
+              name="lofWeight"
+              render={({ field }) => (
+                <FormItem>
+                     <div className="flex justify-between items-center">
+                        <FormLabel>2. Local Outlier Factor (LOF)</FormLabel>
+                        <span className="text-sm font-mono p-1 px-2 rounded-md bg-muted">{field.value}%</span>
+                    </div>
+                  <FormControl>
+                     <Slider
+                      min={0}
+                      max={100}
+                      step={5}
+                      onValueChange={(value) => field.onChange(value[0])}
+                      value={[field.value]}
+                    />
+                  </FormControl>
+                  <FormMessage />
+                </FormItem>
+              )}
+            />
+             <FormField
+              control={form.control}
+              name="mahalanobisWeight"
+              render={({ field }) => (
+                <FormItem>
+                     <div className="flex justify-between items-center">
+                        <FormLabel>3. Mahalanobis Distance (Correlation)</FormLabel>
+                        <span className="text-sm font-mono p-1 px-2 rounded-md bg-muted">{field.value}%</span>
+                    </div>
+                  <FormControl>
+                     <Slider
+                      min={0}
+                      max={100}
+                      step={5}
+                      onValueChange={(value) => field.onChange(value[0])}
+                      value={[field.value]}
+                    />
+                  </FormControl>
+                  <FormMessage />
+                </FormItem>
+              )}
+            />
+             <FormField
+              control={form.control}
+              name="arimaWeight"
+              render={({ field }) => (
+                <FormItem>
+                     <div className="flex justify-between items-center">
+                        <FormLabel>4. ARIMA Residuals (Prediction Deviation)</FormLabel>
+                        <span className="text-sm font-mono p-1 px-2 rounded-md bg-muted">{field.value}%</span>
+                    </div>
+                  <FormControl>
+                     <Slider
+                      min={0}
+                      max={100}
+                      step={5}
+                      onValueChange={(value) => field.onChange(value[0])}
+                      value={[field.value]}
+                    />
+                  </FormControl>
+                  <FormMessage />
+                </FormItem>
+              )}
+            />
+          </CardContent>
+        </Card>
+        
+        <Card>
+          <CardHeader>
             <CardTitle>AI Risk Thresholds</CardTitle>
             <CardDescription>
               Define the risk score thresholds for triggering different alert levels.
             </CardDescription>
           </CardHeader>
-          <CardContent className="space-y-8">
+          <CardContent className="space-y-8 pt-6">
             <FormField
               control={form.control}
               name="moderateThreshold"
@@ -140,7 +247,7 @@ export function SettingsForm() {
                 <CardTitle>External Integrations</CardTitle>
                 <CardDescription>Manage connections to Waze and SIP4D.</CardDescription>
             </CardHeader>
-            <CardContent className="space-y-6">
+            <CardContent className="space-y-6 pt-6">
                 <FormField
                     control={form.control}
                     name="wazeIntegration"

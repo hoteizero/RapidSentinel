@@ -23,11 +23,15 @@ import {
   BrainCircuit,
   Server,
   BookText,
+  FlaskConical,
+  BarChart,
 } from 'lucide-react';
 
 const navItems = [
   { href: '/dashboard', icon: LayoutDashboard, label: 'ダッシュボード', testId: 'nav-dashboard' },
   { href: '/xai', icon: BrainCircuit, label: 'AI判断根拠', testId: 'nav-xai' },
+  { href: '/analysis', icon: BarChart, label: '分析', testId: 'nav-analysis' },
+  { href: '/simulation', icon: FlaskConical, label: 'シミュレーション', testId: 'nav-simulation' },
   { href: '/alerts', icon: Siren, label: '警報', testId: 'nav-alerts' },
   { href: '/sensors', icon: RadioTower, label: 'センサー', testId: 'nav-sensors' },
   { href: '/status', icon: Server, label: 'システム状態', testId: 'nav-status' },

@@ -37,7 +37,7 @@ export function ActionFooter({ latestAlert }: ActionFooterProps) {
         <div>
           <p className="font-bold">最新アラート</p>
           <p className='text-muted-foreground'>
-            {latestAlert ? `「${latestAlert.explanation.substring(0,40)}... (信頼度${latestAlert.riskScore}%)」` : 'アラートはありません'}
+            {latestAlert ? `「${latestAlert?.explanation.substring(0,40)}... (信頼度${latestAlert.riskScore}%)」` : 'アラートはありません'}
           </p>
         </div>
       </div>

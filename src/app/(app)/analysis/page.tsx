@@ -2,8 +2,8 @@
 'use client';
 
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
-import { BarChart, Clock, PieChart as PieChartIcon, AlertCircle, CheckCircle } from 'lucide-react';
-import { ResponsiveContainer, Bar, XAxis, YAxis, CartesianGrid, Tooltip, Legend, PieChart, Pie, Cell } from 'recharts';
+import { BarChart as BarChartIconLucide, Clock, PieChart as PieChartIcon, AlertCircle, CheckCircle } from 'lucide-react';
+import { ResponsiveContainer, Bar, XAxis, YAxis, CartesianGrid, Tooltip, Legend, PieChart, Pie, Cell, BarChart } from 'recharts';
 
 const monthlyTrendData = [
   { month: '1月', alerts: 4 },
@@ -19,6 +19,7 @@ const categoryData = [
   { name: 'Moderate', value: 30, color: 'hsl(var(--chart-4))' },
   { name: 'High', value: 20, color: 'hsl(var(--chart-5))' },
   { name: 'Severe', value: 10, color: 'hsl(var(--destructive))' },
+_
 ];
 
 const falsePositiveData = [
@@ -31,7 +32,7 @@ export default function AnalysisPage() {
     <div className="space-y-6">
       <div>
         <h1 className="text-3xl font-bold font-headline tracking-tight flex items-center gap-2">
-          <BarChart />
+          <BarChartIconLucide />
           分析ダッシュボード
         </h1>
         <p className="text-muted-foreground">
@@ -65,7 +66,7 @@ export default function AnalysisPage() {
         <Card>
           <CardHeader>
             <CardTitle className="flex items-center gap-2 text-lg">
-                <BarChart className='size-5 text-muted-foreground' />
+                <BarChartIconLucide className='size-5 text-muted-foreground' />
                 月別警報トレンド
             </CardTitle>
           </CardHeader>

@@ -19,10 +19,11 @@ import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@
 import { getRiskCategoryColor, mockSensors } from '@/lib/data';
 import type { RiskAssessment } from '@/lib/types';
 import { format } from 'date-fns';
-import { Bot, Lightbulb, MessageSquareQuote, Loader2 } from 'lucide-react';
+import { Bot, Lightbulb, MessageSquareQuote, Loader2, Send } from 'lucide-react';
 import { summarizeAlertReasoning } from '@/ai/flows/summarize-alert-reasoning';
 import { generateRiskAssessmentExplanation } from '@/ai/flows/generate-risk-assessment-explanation';
 import { personalizeAlertMessage } from '@/ai/flows/personalize-alert-message';
+import { useToast } from '@/hooks/use-toast';
 
 
 type AlertDetailsSheetProps = {
@@ -38,6 +39,7 @@ type LoadingState = {
 }
 
 export function AlertDetailsSheet({ alert, open, onOpenChange }: AlertDetailsSheetProps) {
+    const { toast } = useToast();
     const [loading, setLoading] = useState<LoadingState>({ summary: false, explanation: false, personalization: false });
     const [summary, setSummary] = useState('');
     const [explanation, setExplanation] = useState('');
@@ -112,6 +114,21 @@ export function AlertDetailsSheet({ alert, open, onOpenChange }: AlertDetailsShe
             setLoading(prev => ({...prev, personalization: false}));
         }
     }
+
+    const handleNotifyPublic = () => {
+        if (!personalizedMessage) {
+            toast({
+                variant: 'destructive',
+                title: 'メッセージがありません',
+                description: '先にパーソナライズされたメッセージを生成してください。',
+            });
+            return;
+        }
+        toast({
+            title: '住民向けアプリに通知を送信しました',
+            description: `"${personalizedMessage.substring(0, 50)}..."`,
+        });
+    };
 
   if (!alert) return null;
 
@@ -204,6 +221,10 @@ export function AlertDetailsSheet({ alert, open, onOpenChange }: AlertDetailsShe
                             Generate Personalized Message
                         </Button>
                         <Textarea value={personalizedMessage} readOnly placeholder='Generated personalized message will appear here...' />
+                        <Button variant="outline" className="w-full" onClick={handleNotifyPublic}>
+                            <Send className="mr-2" />
+                            住民向けアプリに通知
+                        </Button>
                     </div>
                 </CardContent>
             </Card>

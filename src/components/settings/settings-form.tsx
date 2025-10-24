@@ -1,3 +1,4 @@
+
 'use client';
 
 import { useForm } from 'react-hook-form';
@@ -23,10 +24,10 @@ import { Textarea } from '../ui/textarea';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '../ui/select';
 
 const settingsSchema = z.object({
+  trendAnalysisWeight: z.number().min(0).max(100),
   sensorFusionWeight: z.number().min(0).max(100),
-  lofWeight: z.number().min(0).max(100),
-  mahalanobisWeight: z.number().min(0).max(100),
-  arimaWeight: z.number().min(0).max(100),
+  anomalyDetectionWeight: z.number().min(0).max(100),
+  predictionDeviationWeight: z.number().min(0).max(100),
   moderateThreshold: z.number().min(0).max(100),
   highThreshold: z.number().min(0).max(100),
   severeThreshold: z.number().min(0).max(100),
@@ -48,10 +49,10 @@ export function SettingsForm() {
   const form = useForm<SettingsFormValues>({
     resolver: zodResolver(settingsSchema),
     defaultValues: {
-      sensorFusionWeight: 40,
-      lofWeight: 20,
-      mahalanobisWeight: 25,
-      arimaWeight: 15,
+      trendAnalysisWeight: 40,
+      sensorFusionWeight: 25,
+      anomalyDetectionWeight: 20,
+      predictionDeviationWeight: 15,
       moderateThreshold: 50,
       highThreshold: 75,
       severeThreshold: 90,
@@ -96,19 +97,20 @@ export function SettingsForm() {
           <CardHeader>
             <CardTitle>AI Engine Component Weights</CardTitle>
             <CardDescription>
-              Adjust the weight of each AI component in the final risk score calculation.
+              各AI分析コンポーネントが最終的なリスクスコアに与える影響の重みを調整します。センサーエラーや通信遅延を検知すると、信頼性の低いコンポーネントの重みは自動的に引き下げられます。
             </CardDescription>
           </CardHeader>
           <CardContent className="space-y-8">
             <FormField
               control={form.control}
-              name="sensorFusionWeight"
+              name="trendAnalysisWeight"
               render={({ field }) => (
                 <FormItem>
                   <div className="flex justify-between items-center">
-                    <FormLabel>1. Sensor Fusion (Noise/Fault Detection)</FormLabel>
+                    <FormLabel>1. 異常予兆検知 (トレンド分析)</FormLabel>
                     <span className="text-sm font-mono p-1 px-2 rounded-md bg-muted">{field.value}%</span>
                   </div>
+                  <FormDescription>水位上昇傾向や風速変動など、時系列データの変化率から数時間後の危険を予測します。</FormDescription>
                   <FormControl>
                     <Slider
                       min={0}
@@ -124,13 +126,14 @@ export function SettingsForm() {
             />
             <FormField
               control={form.control}
-              name="lofWeight"
+              name="sensorFusionWeight"
               render={({ field }) => (
                 <FormItem>
                      <div className="flex justify-between items-center">
-                        <FormLabel>2. Local Outlier Factor (LOF)</FormLabel>
+                        <FormLabel>2. センサーフュージョン (複合パターン解析)</FormLabel>
                         <span className="text-sm font-mono p-1 px-2 rounded-md bg-muted">{field.value}%</span>
                     </div>
+                  <FormDescription>雨量、風速、河川水位などの複数センサー情報を組み合わせ、単独では見逃される複合的なリスクパターンを検出します。</FormDescription>
                   <FormControl>
                      <Slider
                       min={0}
@@ -146,13 +149,14 @@ export function SettingsForm() {
             />
              <FormField
               control={form.control}
-              name="mahalanobisWeight"
+              name="anomalyDetectionWeight"
               render={({ field }) => (
                 <FormItem>
                      <div className="flex justify-between items-center">
-                        <FormLabel>3. Mahalanobis Distance (Correlation)</FormLabel>
+                        <FormLabel>3. 異常検知 (LOF, Mahalanobis)</FormLabel>
                         <span className="text-sm font-mono p-1 px-2 rounded-md bg-muted">{field.value}%</span>
                     </div>
+                  <FormDescription>過去の正常データから大きく外れた異常値を統計的に検出し、突発的な変化を捉えます。</FormDescription>
                   <FormControl>
                      <Slider
                       min={0}
@@ -168,13 +172,14 @@ export function SettingsForm() {
             />
              <FormField
               control={form.control}
-              name="arimaWeight"
+              name="predictionDeviationWeight"
               render={({ field }) => (
                 <FormItem>
                      <div className="flex justify-between items-center">
-                        <FormLabel>4. ARIMA Residuals (Prediction Deviation)</FormLabel>
+                        <FormLabel>4. 予測モデルとの乖離 (ARIMA)</FormLabel>
                         <span className="text-sm font-mono p-1 px-2 rounded-md bg-muted">{field.value}%</span>
                     </div>
+                     <FormDescription>AIによる将来予測と、実際のセンサー値の差を監視し、予測不能な急激な状況悪化を検知します。</FormDescription>
                   <FormControl>
                      <Slider
                       min={0}
@@ -420,5 +425,7 @@ export function SettingsForm() {
     </Form>
   );
 }
+
+    
 
     

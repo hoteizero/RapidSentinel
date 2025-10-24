@@ -1,7 +1,7 @@
 
 'use client';
 import { Card, CardHeader, CardTitle, CardContent } from '@/components/ui/card';
-import { Bot, CheckCircle2, AlertCircle, Cpu, ShieldCheck } from 'lucide-react';
+import { Bot, CheckCircle2, AlertCircle, Cpu, ShieldCheck, Airplay } from 'lucide-react';
 import { mockRiskAssessments } from '@/lib/data';
 
 export default function XAIPage() {
@@ -53,46 +53,66 @@ export default function XAIPage() {
             </div>
 
 
-            <Card>
-                <CardHeader>
-                    <CardTitle className='text-lg flex items-center gap-2'><Bot className='size-5'/> AI分析レイヤー</CardTitle>
-                </CardHeader>
-                <CardContent>
-                    <div className='space-y-3 text-sm'>
-                        <div className='flex items-start gap-3 p-3 bg-muted/30 rounded-md border border-red-500/50'>
-                            <CheckCircle2 className='size-5 mt-0.5 shrink-0 text-red-400'/>
-                            <div>
-                                <h4 className='font-semibold'>L1: 単変量閾値超過</h4>
-                                <p className='text-muted-foreground'>河川水位が警報レベル (4.5m) を超過しています (現在4.8m)。これは即時対応が必要な最も明確な兆候です。</p>
-                            </div>
-                        </div>
-                         <div className='flex items-start gap-3 p-3 bg-muted/30 rounded-md border border-red-500/50'>
-                            <CheckCircle2 className='size-5 mt-0.5 shrink-0 text-red-400'/>
-                             <div>
-                                <h4 className='font-semibold'>L2: 相関異常 (マハラノビス法)</h4>
-                                <p className='text-muted-foreground'>現在の降雨量に対し、過去の正常データと比較して水位上昇が異常に速いパターンを検出しました。これは単純な水位だけでは見逃す可能性のある複合的なリスクを示唆しています。</p>
-                            </div>
-                        </div>
-                         <div className='flex items-start gap-3 p-3 bg-muted/30 rounded-md border-amber-500/50'>
-                            <AlertCircle className='size-5 mt-0.5 shrink-0 text-amber-500'/>
-                            <div>
-                                <h4 className='font-semibold'>L3: 予測モデルとの乖離</h4>
-                                <p className='text-muted-foreground'>AIによる30分後の水位予測 (4.6m) を、現在の水位が既に超過しています。これは状況が予測よりも速く悪化していることを示します。</p>
-                            </div>
-                        </div>
+            <div className="grid grid-cols-1 lg:grid-cols-2 gap-4">
+              <Card>
+                  <CardHeader>
+                      <CardTitle className='text-lg flex items-center gap-2'><Bot className='size-5'/> AI分析レイヤー</CardTitle>
+                  </CardHeader>
+                  <CardContent>
+                      <div className='space-y-3 text-sm'>
+                          <div className='flex items-start gap-3 p-3 bg-muted/30 rounded-md border border-red-500/50'>
+                              <CheckCircle2 className='size-5 mt-0.5 shrink-0 text-red-400'/>
+                              <div>
+                                  <h4 className='font-semibold'>L1: 単変量閾値超過</h4>
+                                  <p className='text-muted-foreground'>河川水位が警報レベル (4.5m) を超過しています (現在4.8m)。これは即時対応が必要な最も明確な兆候です。</p>
+                              </div>
+                          </div>
+                          <div className='flex items-start gap-3 p-3 bg-muted/30 rounded-md border border-red-500/50'>
+                              <CheckCircle2 className='size-5 mt-0.5 shrink-0 text-red-400'/>
+                              <div>
+                                  <h4 className='font-semibold'>L2: センサーフュージョン & 相関異常</h4>
+                                  <p className='text-muted-foreground'>現在の降雨量に対し、過去の正常データと比較して水位上昇が異常に速いなど、複数センサーの複合的な相関パターンからリスクを検出しました。</p>
+                              </div>
+                          </div>
+                          <div className='flex items-start gap-3 p-3 bg-muted/30 rounded-md border-amber-500/50'>
+                              <AlertCircle className='size-5 mt-0.5 shrink-0 text-amber-500'/>
+                              <div>
+                                  <h4 className='font-semibold'>L3: 異常予兆検知 & 予測モデルとの乖離</h4>
+                                  <p className='text-muted-foreground'>AIによる30分後の水位予測 (4.6m) を現在の水位が既に超過。状況が予測より速く悪化していることを示します。</p>
+                              </div>
+                          </div>
+                      </div>
+                  </CardContent>
+              </Card>
+              <Card>
+                  <CardHeader>
+                      <CardTitle className='text-lg flex items-center gap-2'><Cpu className='size-5'/> 物理的検証 (ICOT & Drone)</CardTitle>
+                  </CardHeader>
+                  <CardContent>
+                     <div className='space-y-3 text-sm'>
                         <div className='flex items-start gap-3 p-3 bg-muted/30 rounded-md border-green-500/50 font-bold text-green-400 border-t border-border/50 pt-2 mt-2'>
-                            <Cpu className='size-5 mt-0.5 shrink-0'/>
+                            <CheckCircle2 className='size-5 mt-0.5 shrink-0 text-green-500'/>
                             <div>
-                                <h4 className='font-semibold text-foreground'>物理的検証 (ICOT)</h4>
+                                <h4 className='font-semibold text-foreground'>ICOTによる物理マーカー検知</h4>
                                 <p className='text-green-500'>{selectedRiskAssessment.icotStatus?.color_state === 'RED' ? 'マーカー水没（赤変）をカメラで物理的に確認済みです。' : '状態正常'} (信頼度: {selectedRiskAssessment.icotStatus ? `${(selectedRiskAssessment.icotStatus.pattern_integrity * 100).toFixed(0)}%` : 'N/A'})</p>
                                 <p className='text-muted-foreground font-normal'>統計的・予測的分析の結果を、物理的な証拠が裏付けており、このアラートの信頼性は非常に高いと評価できます。</p>
                             </div>
                         </div>
-                    </div>
-                </CardContent>
-            </Card>
+                        <div className='flex items-start gap-3 p-3 bg-muted/30 rounded-md'>
+                            <Airplay className='size-5 mt-0.5 shrink-0 text-primary'/>
+                            <div>
+                                <h4 className='font-semibold'>ドローン自動出動AIによる映像確認</h4>
+                                <p className='text-muted-foreground'>高リスク検知（スコア90以上）に基づき、AIがドローンを自動出動させました。現在、現場のリアルタイム映像を確認中です。</p>
+                            </div>
+                        </div>
+                      </div>
+                  </CardContent>
+              </Card>
+            </div>
         </CardContent>
       </Card>
     </div>
   );
 }
+
+    

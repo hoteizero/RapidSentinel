@@ -19,7 +19,6 @@ const categoryData = [
   { name: 'Moderate', value: 30, color: 'hsl(var(--chart-4))' },
   { name: 'High', value: 20, color: 'hsl(var(--chart-5))' },
   { name: 'Severe', value: 10, color: 'hsl(var(--destructive))' },
-_
 ];
 
 const falsePositiveData = [

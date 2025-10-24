@@ -20,6 +20,7 @@ import { Switch } from '@/components/ui/switch';
 import { useToast } from '@/hooks/use-toast';
 import { Separator } from '../ui/separator';
 import { Textarea } from '../ui/textarea';
+import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '../ui/select';
 
 const settingsSchema = z.object({
   sensorFusionWeight: z.number().min(0).max(100),
@@ -35,6 +36,9 @@ const settingsSchema = z.object({
   sip4dEndpoint: z.string().url().optional(),
   ioNetPrompt: z.string().optional(),
   ioNetDataSource: z.string().optional(),
+  agentJobName: z.string().optional(),
+  agentJobSchedule: z.string().optional(),
+  agentTaskDefinition: z.string().optional(),
 });
 
 type SettingsFormValues = z.infer<typeof settingsSchema>;
@@ -57,6 +61,9 @@ export function SettingsForm() {
       sip4dEndpoint: 'https://api.sip4d.example.go.jp/v1',
       ioNetPrompt: 'Run R script sensor_fusion_lof.R on 1 A100 GPU for 10 minutes',
       ioNetDataSource: 's3://sakai-poc/sensor_data.csv',
+      agentJobName: 'sakai-false-positive-analysis',
+      agentJobSchedule: '0 2 * * *', // Every day at 2 AM
+      agentTaskDefinition: 'Use the last 7 days of mis-detection data to re-optimize model weights.',
     },
   });
 
@@ -71,8 +78,15 @@ export function SettingsForm() {
   function handleIntelligenceJob() {
     toast({
         title: "Intelligence Job Queued",
-        description: `Job ID: job_intel_${Math.random().toString(36).substring(2, 10)}`,
+        description: `Job ID: job_intel_${Math.random().toString(36).substring(2, 10)} - Your job is being scheduled.`,
         });
+  }
+
+  function handleAgentJob() {
+    toast({
+        title: "Automated Job Scheduled",
+        description: `Agent job '${form.getValues('agentJobName')}' has been scheduled.`,
+    });
   }
 
   return (
@@ -299,10 +313,9 @@ export function SettingsForm() {
 
         <Card>
             <CardHeader>
-                <CardTitle>PoC &amp; Development (IO.net Integration)</CardTitle>
+                <CardTitle>PoC &amp; Development (IO.net Intelligence API)</CardTitle>
                 <CardDescription>
-                    Rapidly prototype and test models using natural language with the IO Intelligence API. 
-                    This is for non-core, non-judgemental use cases.
+                    Rapidly prototype and test models using natural language. This is for non-core, non-judgemental use cases.
                 </CardDescription>
             </CardHeader>
             <CardContent className="space-y-4">
@@ -316,7 +329,7 @@ export function SettingsForm() {
                                 <Textarea {...field} placeholder='e.g. "Run Python script analyze.py on 2 A100 GPUs..."' />
                             </FormControl>
                              <FormDescription>
-                                Describe the analysis job you want to run in plain English.
+                                Describe the one-off analysis job you want to run.
                             </FormDescription>
                             <FormMessage />
                         </FormItem>
@@ -332,13 +345,70 @@ export function SettingsForm() {
                                 <Input {...field} placeholder="e.g., s3://bucket-name/data.csv" />
                             </FormControl>
                              <FormDescription>
-                                Provide the path to the data source (e.g., S3 URI).
+                                Provide the path to the data source for the job.
                             </FormDescription>
                             <FormMessage />
                         </FormItem>
                     )}
                 />
                 <Button type="button" onClick={handleIntelligenceJob}>Run Intelligence Job</Button>
+            </CardContent>
+        </Card>
+
+        <Card>
+            <CardHeader>
+                <CardTitle>Automated Background Jobs (IO.net Agent API)</CardTitle>
+                <CardDescription>
+                    Schedule recurring jobs for model retraining and system optimization. This creates a continuous improvement loop without manual intervention.
+                </CardDescription>
+            </CardHeader>
+            <CardContent className="space-y-4">
+                 <FormField
+                    control={form.control}
+                    name="agentJobName"
+                    render={({ field }) => (
+                        <FormItem>
+                            <FormLabel>Job Name</FormLabel>
+                            <FormControl>
+                                <Input {...field} placeholder='e.g., "nightly-model-retraining"' />
+                            </FormControl>
+                            <FormMessage />
+                        </FormItem>
+                    )}
+                />
+                 <FormField
+                    control={form.control}
+                    name="agentJobSchedule"
+                    render={({ field }) => (
+                        <FormItem>
+                            <FormLabel>Schedule (Cron Format)</FormLabel>
+                            <FormControl>
+                                <Input {...field} placeholder="e.g., 0 2 * * *" />
+                            </FormControl>
+                             <FormDescription>
+                               Define when the job should run. The example is for "every day at 2:00 AM".
+                            </FormDescription>
+                            <FormMessage />
+                        </FormItem>
+                    )}
+                />
+                <FormField
+                    control={form.control}
+                    name="agentTaskDefinition"
+                    render={({ field }) => (
+                        <FormItem>
+                            <FormLabel>Task Definition</FormLabel>
+                            <FormControl>
+                                <Textarea {...field} placeholder='Describe the recurring task...' />
+                            </FormControl>
+                             <FormDescription>
+                                High-level description of the task for the agent to execute.
+                            </FormDescription>
+                            <FormMessage />
+                        </FormItem>
+                    )}
+                />
+                <Button type="button" onClick={handleAgentJob}>Schedule Automated Job</Button>
             </CardContent>
         </Card>
 
@@ -350,3 +420,5 @@ export function SettingsForm() {
     </Form>
   );
 }
+
+    

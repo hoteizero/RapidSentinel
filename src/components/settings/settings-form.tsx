@@ -19,6 +19,7 @@ import { Slider } from '@/components/ui/slider';
 import { Switch } from '@/components/ui/switch';
 import { useToast } from '@/hooks/use-toast';
 import { Separator } from '../ui/separator';
+import { Textarea } from '../ui/textarea';
 
 const settingsSchema = z.object({
   sensorFusionWeight: z.number().min(0).max(100),
@@ -32,6 +33,8 @@ const settingsSchema = z.object({
   wazeApiKey: z.string().optional(),
   sip4dIntegration: z.boolean(),
   sip4dEndpoint: z.string().url().optional(),
+  ioNetPrompt: z.string().optional(),
+  ioNetDataSource: z.string().optional(),
 });
 
 type SettingsFormValues = z.infer<typeof settingsSchema>;
@@ -52,6 +55,8 @@ export function SettingsForm() {
       wazeApiKey: 'wz_live_xxxxxxxxxxxxxxxx',
       sip4dIntegration: true,
       sip4dEndpoint: 'https://api.sip4d.example.go.jp/v1',
+      ioNetPrompt: 'Run R script sensor_fusion_lof.R on 1 A100 GPU for 10 minutes',
+      ioNetDataSource: 's3://sakai-poc/sensor_data.csv',
     },
   });
 
@@ -61,6 +66,13 @@ export function SettingsForm() {
       title: 'Settings Saved',
       description: 'Your new settings have been successfully applied.',
     });
+  }
+
+  function handleIntelligenceJob() {
+    toast({
+        title: "Intelligence Job Queued",
+        description: `Job ID: job_intel_${Math.random().toString(36).substring(2, 10)}`,
+        });
   }
 
   return (
@@ -284,8 +296,55 @@ export function SettingsForm() {
                 />
             </CardContent>
         </Card>
+
+        <Card>
+            <CardHeader>
+                <CardTitle>PoC &amp; Development (IO.net Integration)</CardTitle>
+                <CardDescription>
+                    Rapidly prototype and test models using natural language with the IO Intelligence API. 
+                    This is for non-core, non-judgemental use cases.
+                </CardDescription>
+            </CardHeader>
+            <CardContent className="space-y-4">
+                 <FormField
+                    control={form.control}
+                    name="ioNetPrompt"
+                    render={({ field }) => (
+                        <FormItem>
+                            <FormLabel>Natural Language Job Prompt</FormLabel>
+                            <FormControl>
+                                <Textarea {...field} placeholder='e.g. "Run Python script analyze.py on 2 A100 GPUs..."' />
+                            </FormControl>
+                             <FormDescription>
+                                Describe the analysis job you want to run in plain English.
+                            </FormDescription>
+                            <FormMessage />
+                        </FormItem>
+                    )}
+                />
+                 <FormField
+                    control={form.control}
+                    name="ioNetDataSource"
+                    render={({ field }) => (
+                        <FormItem>
+                            <FormLabel>Data Source</FormLabel>
+                            <FormControl>
+                                <Input {...field} placeholder="e.g., s3://bucket-name/data.csv" />
+                            </FormControl>
+                             <FormDescription>
+                                Provide the path to the data source (e.g., S3 URI).
+                            </FormDescription>
+                            <FormMessage />
+                        </FormItem>
+                    )}
+                />
+                <Button type="button" onClick={handleIntelligenceJob}>Run Intelligence Job</Button>
+            </CardContent>
+        </Card>
+
+
         <div className="flex justify-end">
-            <Button type="submit">Save Settings</Button>
+            <Button type="submit">Save All Settings</Button>
         </div>
       </form>
     </Form>

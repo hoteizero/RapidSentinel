@@ -6,7 +6,7 @@ export default function SettingsPage() {
       <div>
         <h1 className="text-3xl font-bold font-headline tracking-tight">Settings</h1>
         <p className="text-muted-foreground">
-          Manage AI engine weights, risk thresholds, and external integrations.
+          Manage AI engine weights, risk thresholds, external integrations, and development jobs.
         </p>
       </div>
       <SettingsForm />

@@ -3,6 +3,7 @@ import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/com
 import { mockSensors } from '@/lib/data';
 import { ArrowRight, Bot, Cpu, RadioTower, Server, Link as LinkIcon } from 'lucide-react';
 import Link from 'next/link';
+import { cn } from '@/lib/utils';
 
 export default function StatusPage() {
     const onlineSensors = mockSensors.filter(s => s.status === 'online').length;

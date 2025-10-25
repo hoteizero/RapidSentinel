@@ -1,3 +1,4 @@
+
 export type SensorType = "Rain" | "Wind" | "River Level" | "Seismic" | "Camera" | "Acoustic";
 
 export interface ICOTStatus {
@@ -23,11 +24,11 @@ export interface SensorEvent {
 export type RiskCategory = 'Low' | 'Moderate' | 'High' | 'Severe';
 
 export interface RiskAssessment {
-  id: string;
-  location: string;
-  time: string; // ISO 8601 format
-  riskScore: number; // 0-100
-  riskCategory: RiskCategory;
+  id: string; // disaster_id
+  location: string; // Describes the area, e.g., "Shibuya River Area"
+  time: string; // ISO 8601 format (timestamp)
+  riskScore: number; // 0-100, maps to severity
+  riskCategory: RiskCategory; // e.g., 'High', maps to severity
   contributingSensors: string[]; // array of sensorIds
   explanation: string;
   summary?: string;
@@ -35,16 +36,16 @@ export interface RiskAssessment {
   trustScore?: number;
 }
 
-export type IncidentType = 'Flood' | 'Road Closure' | 'Traffic Jam' | 'Landslide';
+export type IncidentType = 'Flood' | 'Road Closure' | 'Traffic Jam' | 'Landslide' | 'Earthquake';
 
 export interface Incident {
-  id: string;
+  id: string; // disaster_id
   type: IncidentType;
-  provider: 'Waze' | 'SIP4D' | 'Manual';
-  severity: 'low' | 'medium' | 'high';
-  startTime: string; // ISO 8601 format
+  provider: 'Waze' | 'SIP4D' | 'Manual' | 'JMA'; // source
+  severity: 'low' | 'medium' | 'high'; // maps to severity
+  startTime: string; // ISO 8601 format (timestamp)
   endTime?: string;
   description: string;
-  lat: number;
-  lon: number;
+  lat: number; // Part of location
+  lon: number; // Part of location
 }

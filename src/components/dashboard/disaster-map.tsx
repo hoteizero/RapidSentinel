@@ -1,9 +1,10 @@
+
 'use client';
 
 import { APIProvider, Map, AdvancedMarker, Pin, InfoWindow } from '@vis.gl/react-google-maps';
 import type { SensorEvent, Incident, RiskAssessment } from '@/lib/types';
 import { useState } from 'react';
-import { Card, CardContent, CardHeader, CardTitle } from '../ui/card';
+import { Card, CardContent, CardHeader, CardTitle, CardDescription } from '../ui/card';
 import { Button } from '../ui/button';
 import { AlertTriangle, Camera, RadioTower, Siren, TrafficCone, Wind, Waypoints } from 'lucide-react';
 import { cn } from '@/lib/utils';
@@ -52,13 +53,16 @@ export function DisasterMap({ sensors, incidents, alerts, onSelectItem }: Disast
                 <AlertTriangle className="size-12 text-destructive" />
             </div>
           <CardTitle>地図の表示には設定が必要です</CardTitle>
+           <CardDescription>
+            Google Maps APIキーが設定されていません。
+          </CardDescription>
         </CardHeader>
         <CardContent>
           <p className="text-muted-foreground mb-4">
-            インタラクティブマップを表示するには、Google Maps APIキーを提供してください。
+            インタラクティブマップを表示するには、APIキーを提供してください。
           </p>
           <p className="text-sm text-muted-foreground/80">
-            `.env.local.example` ファイルを `.env.local` にリネームし、`NEXT_PUBLIC_GOOGLE_MAPS_API_KEY` 変数にキーを追加してください。
+            `.env.local` ファイルを作成または開き、`NEXT_PUBLIC_GOOGLE_MAPS_API_KEY` 変数に有効なキーを設定してください。
           </p>
           <Button asChild className="mt-4">
             <a href="https://console.cloud.google.com/google/maps-apis/overview" target="_blank" rel="noopener noreferrer">APIキーを取得</a>

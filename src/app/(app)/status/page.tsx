@@ -1,12 +1,19 @@
 
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
 import { mockSensors } from '@/lib/data';
-import { ArrowRight, Bot, Cpu, RadioTower, Server, Wifi, Satellite, Link as LinkIcon, AlertTriangle } from 'lucide-react';
+import { ArrowRight, Bot, Cpu, RadioTower, Server, Link as LinkIcon } from 'lucide-react';
 import Link from 'next/link';
 
 export default function StatusPage() {
     const onlineSensors = mockSensors.filter(s => s.status === 'online').length;
     const totalSensors = mockSensors.length;
+
+    const integrationStatus = [
+        { name: '気象庁防災情報XML', status: 'Normal', color: 'bg-green-500' },
+        { name: '公共情報コモンズ (L-Alert)', status: 'Normal', color: 'bg-green-500' },
+        { name: '自治体オープンデータ', status: 'Delayed', color: 'bg-yellow-500' },
+        { name: 'Waze for Cities', status: 'Error', color: 'bg-red-500' },
+    ];
 
     return (
         <div className="space-y-6">
@@ -88,36 +95,18 @@ export default function StatusPage() {
                             <LinkIcon className='size-5 text-muted-foreground' />
                            外部システム連携
                         </CardTitle>
+                        <CardDescription>防災情報データソースとの接続状態</CardDescription>
                     </CardHeader>
                     <CardContent className="grid grid-cols-2 md:grid-cols-4 gap-4">
-                        <div className='flex items-center gap-2 p-3 bg-muted/50 rounded-lg'>
-                            <div className="h-3 w-3 rounded-full bg-green-500"></div>
-                            <div>
-                                <p className='font-semibold text-sm'>気象庁API</p>
-                                <p className='text-xs text-muted-foreground'>正常</p>
+                        {integrationStatus.map((item) => (
+                             <div key={item.name} className='flex items-center gap-2 p-3 bg-muted/50 rounded-lg'>
+                                <div className={cn("h-3 w-3 rounded-full", item.color)}></div>
+                                <div>
+                                    <p className='font-semibold text-sm'>{item.name}</p>
+                                    <p className='text-xs text-muted-foreground'>{item.status}</p>
+                                </div>
                             </div>
-                        </div>
-                         <div className='flex items-center gap-2 p-3 bg-muted/50 rounded-lg'>
-                            <div className="h-3 w-3 rounded-full bg-green-500"></div>
-                            <div>
-                                <p className='font-semibold text-sm'>J-ALERT</p>
-                                <p className='text-xs text-muted-foreground'>正常</p>
-                            </div>
-                        </div>
-                         <div className='flex items-center gap-2 p-3 bg-muted/50 rounded-lg'>
-                            <div className="h-3 w-3 rounded-full bg-yellow-500"></div>
-                             <div>
-                                <p className='font-semibold text-sm'>防災行政無線</p>
-                                <p className='text-xs text-muted-foreground'>待機中</p>
-                            </div>
-                        </div>
-                         <div className='flex items-center gap-2 p-3 bg-muted/50 rounded-lg'>
-                            <div className="h-3 w-3 rounded-full bg-red-500"></div>
-                            <div>
-                                <p className='font-semibold text-sm'>ICOTクラウド</p>
-                                <p className='text-xs text-muted-foreground'>応答遅延</p>
-                            </div>
-                        </div>
+                        ))}
                     </CardContent>
                 </Card>
             </div>

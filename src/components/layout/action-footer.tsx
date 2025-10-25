@@ -1,3 +1,4 @@
+
 'use client';
 import { Button } from '@/components/ui/button';
 import { useToast } from '@/hooks/use-toast';
@@ -66,12 +67,11 @@ export function ActionFooter({ latestAlert }: ActionFooterProps) {
             </AlertDialogFooter>
           </AlertDialogContent>
         </AlertDialog>
-
         <AlertDialog>
           <AlertDialogTrigger asChild>
-             <Button variant="destructive" className='long-press-button' data-testid="action-issue-alert">
-                <AlertTriangle />
-                警報発令
+            <Button variant="destructive" className='long-press-button' data-testid="action-issue-alert">
+              <AlertTriangle />
+              警報発令
             </Button>
           </AlertDialogTrigger>
           <AlertDialogContent>
@@ -87,7 +87,6 @@ export function ActionFooter({ latestAlert }: ActionFooterProps) {
             </AlertDialogFooter>
           </AlertDialogContent>
         </AlertDialog>
-        
         <Button onClick={() => handleAction('ドローン要請')} data-testid="action-request-drone">
           <Airplay />
           ドローン要請

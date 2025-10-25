@@ -1,5 +1,5 @@
 'use client';
-import { useState } from 'react';
+import { useState, useRef } from 'react';
 import {
   Sheet,
   SheetContent,
@@ -19,10 +19,11 @@ import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@
 import { getRiskCategoryColor, mockSensors } from '@/lib/data';
 import type { RiskAssessment } from '@/lib/types';
 import { format } from 'date-fns';
-import { Bot, Lightbulb, MessageSquareQuote, Loader2, Send } from 'lucide-react';
+import { Bot, Lightbulb, MessageSquareQuote, Loader2, Send, Volume2, Pause } from 'lucide-react';
 import { summarizeAlertReasoning } from '@/ai/flows/summarize-alert-reasoning';
 import { generateRiskAssessmentExplanation } from '@/ai/flows/generate-risk-assessment-explanation';
 import { personalizeAlertMessage } from '@/ai/flows/personalize-alert-message';
+import { generateSpeech } from '@/ai/flows/generate-speech';
 import { useToast } from '@/hooks/use-toast';
 
 
@@ -36,14 +37,18 @@ type LoadingState = {
     summary: boolean;
     explanation: boolean;
     personalization: boolean;
+    speech: boolean;
 }
 
 export function AlertDetailsSheet({ alert, open, onOpenChange }: AlertDetailsSheetProps) {
     const { toast } = useToast();
-    const [loading, setLoading] = useState<LoadingState>({ summary: false, explanation: false, personalization: false });
+    const [loading, setLoading] = useState<LoadingState>({ summary: false, explanation: false, personalization: false, speech: false });
     const [summary, setSummary] = useState('');
     const [explanation, setExplanation] = useState('');
     const [personalizedMessage, setPersonalizedMessage] = useState('');
+    const [audioUrl, setAudioUrl] = useState<string | null>(null);
+    const [isPlaying, setIsPlaying] = useState(false);
+    const audioRef = useRef<HTMLAudioElement | null>(null);
     
     const [role, setRole] = useState('citizen');
     const [location, setLocation] = useState('123 Main St, Anytown');
@@ -114,6 +119,55 @@ export function AlertDetailsSheet({ alert, open, onOpenChange }: AlertDetailsShe
             setLoading(prev => ({...prev, personalization: false}));
         }
     }
+
+    const handleGenerateSpeech = async () => {
+        if (!personalizedMessage) {
+            toast({
+                variant: 'destructive',
+                title: 'No Message to Read',
+                description: 'Please generate a personalized message first.',
+            });
+            return;
+        }
+        setLoading(prev => ({ ...prev, speech: true }));
+        setAudioUrl(null);
+        if (audioRef.current) {
+            audioRef.current.pause();
+            audioRef.current = null;
+        }
+        setIsPlaying(false);
+
+        try {
+            const audioDataUri = await generateSpeech(personalizedMessage);
+            setAudioUrl(audioDataUri);
+            const audio = new Audio(audioDataUri);
+            audioRef.current = audio;
+            audio.play();
+            setIsPlaying(true);
+            audio.onended = () => setIsPlaying(false);
+        } catch (error) {
+            console.error('Error generating speech:', error);
+            toast({
+                variant: 'destructive',
+                title: 'Speech Generation Failed',
+                description: 'Could not convert the message to speech.',
+            });
+        } finally {
+            setLoading(prev => ({ ...prev, speech: false }));
+        }
+    };
+
+    const togglePlayPause = () => {
+        if (audioRef.current) {
+            if (isPlaying) {
+                audioRef.current.pause();
+            } else {
+                audioRef.current.play();
+            }
+            setIsPlaying(!isPlaying);
+        }
+    };
+
 
     const handleNotifyPublic = () => {
         if (!personalizedMessage) {
@@ -221,6 +275,24 @@ export function AlertDetailsSheet({ alert, open, onOpenChange }: AlertDetailsShe
                             Generate Personalized Message
                         </Button>
                         <Textarea value={personalizedMessage} readOnly placeholder='Generated personalized message will appear here...' />
+                        
+                        <div className="flex gap-2">
+                            <Button
+                                variant="outline"
+                                className="w-full"
+                                onClick={handleGenerateSpeech}
+                                disabled={loading.speech || !personalizedMessage}
+                            >
+                                {loading.speech ? <Loader2 className="animate-spin" /> : <Volume2 />}
+                                メッセージ読み上げ
+                            </Button>
+                            {audioUrl && (
+                                <Button variant="ghost" size="icon" onClick={togglePlayPause}>
+                                    {isPlaying ? <Pause /> : <Volume2 />}
+                                </Button>
+                            )}
+                        </div>
+
                         <Button variant="outline" className="w-full" onClick={handleNotifyPublic}>
                             <Send className="mr-2" />
                             住民向けアプリに通知

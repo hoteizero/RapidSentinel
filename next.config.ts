@@ -38,6 +38,7 @@ const nextConfig: NextConfig = {
   },
   webpack: (config, { isServer }) => {
     if (!isServer) {
+      config.output.publicPath = './_next/';
       config.plugins.push(
         new CopyWebpackPlugin({
           patterns: [

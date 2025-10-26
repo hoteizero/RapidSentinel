@@ -38,25 +38,24 @@ const nextConfig: NextConfig = {
   },
   webpack: (config, { isServer }) => {
     if (!isServer) {
-      config.output.publicPath = './_next/';
       config.plugins.push(
         new CopyWebpackPlugin({
           patterns: [
             {
               from: path.join(__dirname, 'node_modules/cesium/Build/Cesium/Workers'),
-              to: '../public/static/cesium/Workers',
+              to: path.join(config.context, 'public/static/cesium/Workers'),
             },
             {
               from: path.join(__dirname, 'node_modules/cesium/Build/Cesium/ThirdParty'),
-              to: '../public/static/cesium/ThirdParty',
+              to: path.join(config.context, 'public/static/cesium/ThirdParty'),
             },
             {
               from: path.join(__dirname, 'node_modules/cesium/Build/Cesium/Assets'),
-              to: '../public/static/cesium/Assets',
+              to: path.join(config.context, 'public/static/cesium/Assets'),
             },
             {
               from: path.join(__dirname, 'node_modules/cesium/Build/Cesium/Widgets'),
-              to: '../public/static/cesium/Widgets',
+              to: path.join(config.context, 'public/static/cesium/Widgets'),
             },
           ],
         })

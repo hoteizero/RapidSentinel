@@ -43,19 +43,19 @@ const nextConfig: NextConfig = {
           patterns: [
             {
               from: path.join(__dirname, 'node_modules/cesium/Build/Cesium/Workers'),
-              to: 'static/cesium/Workers',
+              to: '../public/static/cesium/Workers',
             },
             {
               from: path.join(__dirname, 'node_modules/cesium/Build/Cesium/ThirdParty'),
-              to: 'static/cesium/ThirdParty',
+              to: '../public/static/cesium/ThirdParty',
             },
             {
               from: path.join(__dirname, 'node_modules/cesium/Build/Cesium/Assets'),
-              to: 'static/cesium/Assets',
+              to: '../public/static/cesium/Assets',
             },
             {
               from: path.join(__dirname, 'node_modules/cesium/Build/Cesium/Widgets'),
-              to: 'static/cesium/Widgets',
+              to: '../public/static/cesium/Widgets',
             },
           ],
         })

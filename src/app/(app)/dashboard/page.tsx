@@ -1,7 +1,6 @@
 
 'use client';
 import { useState } from 'react';
-import { DisasterMap } from '@/components/dashboard/disaster-map';
 import { RecentAlertsCard } from '@/components/dashboard/recent-alerts-card';
 import { mockIncidents, mockRiskAssessments, mockSensors } from '@/lib/data';
 import type { RiskAssessment, SensorEvent, Incident } from '@/lib/types';
@@ -10,6 +9,10 @@ import { Card, CardHeader, CardTitle, CardContent } from '@/components/ui/card';
 import { Info, BarChart, Bot, Waypoints } from 'lucide-react';
 import { ResponsiveContainer, LineChart, CartesianGrid, XAxis, YAxis, Tooltip, Legend, Line, Bar, ComposedChart } from 'recharts';
 import { ActionFooter } from '@/components/layout/action-footer';
+import dynamic from 'next/dynamic';
+
+const CesiumMap = dynamic(() => import('@/components/dashboard/cesium-map'), { ssr: false });
+
 
 const timeSeriesData = [
   { time: '6h ago', 水位: 4.2, 雨量: 5, ICOT状態: 0 },
@@ -37,7 +40,7 @@ export default function DashboardPage() {
             {/* Left Pane */}
             <aside className="w-[30%] flex flex-col gap-4 p-4 border-r bg-muted/20">
                 <div className="h-[55%] rounded-lg overflow-hidden shadow-md">
-                <DisasterMap sensors={mockSensors} incidents={mockIncidents} alerts={mockRiskAssessments} onSelectItem={handleSelectItem} />
+                <CesiumMap />
                 </div>
                 <div className='h-[45%]'>
                     <RecentAlertsCard alerts={mockRiskAssessments} onSelectAlert={handleSelectItem} />

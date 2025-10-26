@@ -1,3 +1,5 @@
+
+@import "cesium/Build/Source/Widgets/widgets.css";
 @tailwind base;
 @tailwind components;
 @tailwind utilities;

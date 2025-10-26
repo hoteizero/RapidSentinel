@@ -23,36 +23,36 @@ export function CesiumMap() {
     if (cesiumContainer.current && !viewerRef.current) {
         Ion.defaultAccessToken = process.env.NEXT_PUBLIC_CESIUM_ION_TOKEN || '';
 
-        const viewer = new Viewer(cesiumContainer.current, {
-            terrainProvider: new Terrain(Terrain.CesiumWorldTerrain),
-            imageryProvider: new UrlTemplateImageryProvider({
-                url: "https://cyberjapandata.gsi.go.jp/xyz/std/{z}/{x}/{y}.png",
-                credit: "地理院地図",
-            }),
-            animation: false,
-            baseLayerPicker: false,
-            fullscreenButton: false,
-            geocoder: false,
-            homeButton: false,
-            infoBox: true, // Enable InfoBox for attribute display
-            sceneModePicker: false,
-            selectionIndicator: false,
-            timeline: false,
-            navigationHelpButton: false,
-        });
-
-        // Fly to a custom position over Tokyo
-        viewer.camera.flyTo({
-            destination: Cartesian3.fromDegrees(139.767, 35.681, 15000),
-            orientation: {
-                heading: CesiumMath.toRadians(0.0),
-                pitch: CesiumMath.toRadians(-90.0),
-            }
-        });
-
-        // Add Plateau 3D Tiles
-        const addTileset = async () => {
+        const setupViewer = async () => {
             try {
+                const terrainProvider = await createWorldTerrainAsync();
+
+                const viewer = new Viewer(cesiumContainer.current!, {
+                    terrainProvider: terrainProvider,
+                    imageryProvider: new UrlTemplateImageryProvider({
+                        url: "https://cyberjapandata.gsi.go.jp/xyz/std/{z}/{x}/{y}.png",
+                        credit: "地理院地図",
+                    }),
+                    animation: false,
+                    baseLayerPicker: false,
+                    fullscreenButton: false,
+                    geocoder: false,
+                    homeButton: false,
+                    infoBox: true, // Enable InfoBox for attribute display
+                    sceneModePicker: false,
+                    selectionIndicator: false,
+                    timeline: false,
+                    navigationHelpButton: false,
+                });
+
+                viewer.camera.flyTo({
+                    destination: Cartesian3.fromDegrees(139.767, 35.681, 15000),
+                    orientation: {
+                        heading: CesiumMath.toRadians(0.0),
+                        pitch: CesiumMath.toRadians(-90.0),
+                    }
+                });
+
                 const tileset = await Cesium3DTileset.fromUrl(
                     "https://plateau.geospatial.jp/main/data/3d-tiles/bldg/13100_tokyo23-ku_2022/13101_chiyoda-ku/low_resolution/tileset.json",
                     {
@@ -63,7 +63,6 @@ export function CesiumMap() {
                 );
                 viewer.scene.primitives.add(tileset);
 
-                 // Handle click events to show attributes
                 const handler = new ScreenSpaceEventHandler(viewer.scene.canvas);
                 handler.setInputAction((movement: any) => {
                     const pickedObject = viewer.scene.pick(movement.position);
@@ -76,9 +75,6 @@ export function CesiumMap() {
                         }
                         description += '</tbody></table>';
                         
-                        // This would typically be set on the infoBox viewModel
-                        // For now, let's log to console to verify
-                        console.log(description);
                         if (viewer.infoBox) {
                            viewer.infoBox.viewModel.description = description;
                            viewer.infoBox.viewModel.title = pickedObject.getProperty('gml_id') || 'Building Attributes';
@@ -86,16 +82,14 @@ export function CesiumMap() {
                     }
                 }, ScreenSpaceEventType.LEFT_CLICK);
 
+                viewerRef.current = viewer;
 
             } catch (error) {
-                console.error(`Error loading tileset: ${error}`);
+                console.error(`Error setting up Cesium viewer: ${error}`);
             }
-        }
-
-        addTileset();
-
-
-        viewerRef.current = viewer;
+        };
+        
+        setupViewer();
     }
 
     return () => {

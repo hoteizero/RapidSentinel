@@ -1,5 +1,5 @@
 
-@import "cesium/Build/Source/Widgets/widgets.css";
+@import "cesium/Build/Cesium/Widgets/widgets.css";
 @tailwind base;
 @tailwind components;
 @tailwind utilities;

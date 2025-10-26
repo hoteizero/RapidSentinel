@@ -65,7 +65,7 @@ export function CesiumMap() {
                 const handler = new ScreenSpaceEventHandler(viewer.scene.canvas);
                 handler.setInputAction((movement: any) => {
                     const pickedObject = viewer.scene.pick(movement.position);
-                    if (defined(pickedObject) && defined(pickedObject.getProperty)) {
+                    if (defined(pickedObject) && defined(pickedObject.getPropertyNames)) {
                         const propertyNames = pickedObject.getPropertyNames();
                         let description = '<table class="cesium-infoBox-defaultTable"><tbody>';
                         for (let i = 0; i < propertyNames.length; i++) {
@@ -75,8 +75,8 @@ export function CesiumMap() {
                         description += '</tbody></table>';
                         
                         if (viewer.infoBox) {
-                           viewer.infoBox.viewModel.description = description;
                            viewer.infoBox.viewModel.title = pickedObject.getProperty('gml_id') || 'Building Attributes';
+                           viewer.infoBox.viewModel.description = description;
                         }
                     }
                 }, ScreenSpaceEventType.LEFT_CLICK);

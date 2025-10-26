@@ -1,7 +1,5 @@
 
 import type {NextConfig} from 'next';
-const withCesium = require('@cesium/next');
-
 
 const nextConfig: NextConfig = {
   /* config options here */
@@ -38,4 +36,4 @@ const nextConfig: NextConfig = {
   },
 };
 
-export default withCesium(nextConfig);
+export default nextConfig;

@@ -3,13 +3,16 @@
 import { useEffect, useRef } from 'react';
 import {
   Cartesian3,
-  createWorldTerrainAsync,
   Ion,
   Math as CesiumMath,
-  Terrain,
   UrlTemplateImageryProvider,
   Viewer,
+  createWorldTerrainAsync,
   Cesium3DTileset,
+  ScreenSpaceEventHandler,
+  ScreenSpaceEventType,
+  defined,
+  Color,
 } from 'cesium';
 
 export function CesiumMap() {
@@ -31,14 +34,14 @@ export function CesiumMap() {
             fullscreenButton: false,
             geocoder: false,
             homeButton: false,
-            infoBox: false,
+            infoBox: true, // Enable InfoBox for attribute display
             sceneModePicker: false,
             selectionIndicator: false,
             timeline: false,
             navigationHelpButton: false,
         });
 
-        // Fly to a custom position
+        // Fly to a custom position over Tokyo
         viewer.camera.flyTo({
             destination: Cartesian3.fromDegrees(139.767, 35.681, 15000),
             orientation: {
@@ -51,9 +54,39 @@ export function CesiumMap() {
         const addTileset = async () => {
             try {
                 const tileset = await Cesium3DTileset.fromUrl(
-                    "https://plateau.geospatial.jp/main/data/3d-tiles/Tokyo_23ku/tileset.json"
+                    "https://plateau.geospatial.jp/main/data/3d-tiles/bldg/13100_tokyo23-ku_2022/13101_chiyoda-ku/low_resolution/tileset.json",
+                    {
+                      skipLevelOfDetail: true,
+                      baseScreenSpaceError: 1024,
+                      maximumScreenSpaceError: 32,
+                    }
                 );
                 viewer.scene.primitives.add(tileset);
+
+                 // Handle click events to show attributes
+                const handler = new ScreenSpaceEventHandler(viewer.scene.canvas);
+                handler.setInputAction((movement: any) => {
+                    const pickedObject = viewer.scene.pick(movement.position);
+                    if (defined(pickedObject) && defined(pickedObject.getProperty)) {
+                        const propertyNames = pickedObject.getPropertyNames();
+                        let description = '<table class="cesium-infoBox-defaultTable"><tbody>';
+                        for (let i = 0; i < propertyNames.length; i++) {
+                            const name = propertyNames[i];
+                            description += `<tr><th>${name}</th><td>${pickedObject.getProperty(name)}</td></tr>`;
+                        }
+                        description += '</tbody></table>';
+                        
+                        // This would typically be set on the infoBox viewModel
+                        // For now, let's log to console to verify
+                        console.log(description);
+                        if (viewer.infoBox) {
+                           viewer.infoBox.viewModel.description = description;
+                           viewer.infoBox.viewModel.title = pickedObject.getProperty('gml_id') || 'Building Attributes';
+                        }
+                    }
+                }, ScreenSpaceEventType.LEFT_CLICK);
+
+
             } catch (error) {
                 console.error(`Error loading tileset: ${error}`);
             }
@@ -66,7 +99,7 @@ export function CesiumMap() {
     }
 
     return () => {
-      if (viewerRef.current) {
+      if (viewerRef.current && !viewerRef.current.isDestroyed()) {
         viewerRef.current.destroy();
         viewerRef.current = null;
       }

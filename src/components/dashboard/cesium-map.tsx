@@ -12,7 +12,6 @@ import {
   ScreenSpaceEventHandler,
   ScreenSpaceEventType,
   defined,
-  Color,
   EllipsoidTerrainProvider,
 } from 'cesium';
 

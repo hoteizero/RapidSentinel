@@ -13,6 +13,7 @@ import {
   ScreenSpaceEventType,
   defined,
   Color,
+  EllipsoidTerrainProvider,
 } from 'cesium';
 
 export function CesiumMap() {
@@ -25,10 +26,8 @@ export function CesiumMap() {
 
         const setupViewer = async () => {
             try {
-                const terrainProvider = await createWorldTerrainAsync();
-
                 const viewer = new Viewer(cesiumContainer.current!, {
-                    terrainProvider: terrainProvider,
+                    terrainProvider: new EllipsoidTerrainProvider(),
                     imageryProvider: new UrlTemplateImageryProvider({
                         url: "https://cyberjapandata.gsi.go.jp/xyz/std/{z}/{x}/{y}.png",
                         credit: "地理院地図",

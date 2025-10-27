@@ -37,31 +37,31 @@ const nextConfig: NextConfig = {
     bodySizeLimit: '4.5mb',
   },
   webpack: (config, { isServer }) => {
-    if (!isServer) {
-      config.plugins.push(
-        new CopyWebpackPlugin({
-          patterns: [
-            {
-              from: path.join(__dirname, 'node_modules/cesium/Build/Cesium/Workers'),
-              to: path.join(config.context, 'public/static/cesium/Workers'),
-            },
-            {
-              from: path.join(__dirname, 'node_modules/cesium/Build/Cesium/ThirdParty'),
-              to: path.join(config.context, 'public/static/cesium/ThirdParty'),
-            },
-            {
-              from: path.join(__dirname, 'node_modules/cesium/Build/Cesium/Assets'),
-              to: path.join(config.context, 'public/static/cesium/Assets'),
-            },
-            {
-              from: path.join(__dirname, 'node_modules/cesium/Build/Cesium/Widgets'),
-              to: path.join(config.context, 'public/static/cesium/Widgets'),
-            },
-          ],
-        })
-      );
-    }
+    // Keep exportsFields for proper module resolution
     config.resolve.exportsFields = [];
+
+    config.plugins.push(
+      new CopyWebpackPlugin({
+        patterns: [
+          {
+            from: path.join(__dirname, 'node_modules/cesium/Build/Cesium/Workers'),
+            to: '../public/static/cesium/Workers',
+          },
+          {
+            from: path.join(__dirname, 'node_modules/cesium/Build/Cesium/ThirdParty'),
+            to: '../public/static/cesium/ThirdParty',
+          },
+          {
+            from: path.join(__dirname, 'node_modules/cesium/Build/Cesium/Assets'),
+            to: '../public/static/cesium/Assets',
+          },
+          {
+            from: path.join(__dirname, 'node_modules/cesium/Build/Cesium/Widgets'),
+            to: '../public/static/cesium/Widgets',
+          },
+        ],
+      })
+    );
     return config;
   },
 };

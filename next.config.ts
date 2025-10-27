@@ -1,7 +1,5 @@
 
 import type {NextConfig} from 'next';
-import CopyWebpackPlugin from 'copy-webpack-plugin';
-import path from 'path';
 
 const nextConfig: NextConfig = {
   /* config options here */
@@ -36,32 +34,8 @@ const nextConfig: NextConfig = {
   serverActions: {
     bodySizeLimit: '4.5mb',
   },
-  webpack: (config, { isServer }) => {
-    // Keep exportsFields for proper module resolution
+  webpack: (config) => {
     config.resolve.exportsFields = [];
-
-    config.plugins.push(
-      new CopyWebpackPlugin({
-        patterns: [
-          {
-            from: path.join(__dirname, 'node_modules/cesium/Build/Cesium/Workers'),
-            to: '../public/static/cesium/Workers',
-          },
-          {
-            from: path.join(__dirname, 'node_modules/cesium/Build/Cesium/ThirdParty'),
-            to: '../public/static/cesium/ThirdParty',
-          },
-          {
-            from: path.join(__dirname, 'node_modules/cesium/Build/Cesium/Assets'),
-            to: '../public/static/cesium/Assets',
-          },
-          {
-            from: path.join(__dirname, 'node_modules/cesium/Build/Cesium/Widgets'),
-            to: '../public/static/cesium/Widgets',
-          },
-        ],
-      })
-    );
     return config;
   },
 };

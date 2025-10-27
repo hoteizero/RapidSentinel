@@ -11,7 +11,7 @@
     "start": "next start",
     "lint": "next lint",
     "typecheck": "tsc --noEmit",
-    "postinstall": "patch-package"
+    "postinstall": "mkdir -p public/static/cesium && cp -r node_modules/cesium/Build/Cesium/Workers public/static/cesium/ && cp -r node_modules/cesium/Build/Cesium/ThirdParty public/static/cesium/ && cp -r node_modules/cesium/Build/Cesium/Assets public/static/cesium/ && cp -r node_modules/cesium/Build/Cesium/Widgets public/static/cesium/"
   },
   "dependencies": {
     "@genkit-ai/google-genai": "^1.20.0",

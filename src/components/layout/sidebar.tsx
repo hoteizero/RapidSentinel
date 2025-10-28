@@ -30,7 +30,7 @@ import {
 
 const navItems = [
   { href: '/dashboard', icon: LayoutDashboard, label: 'ダッシュボード', testId: 'nav-dashboard' },
-  { href: '/xai', icon: BrainCircuit, label: 'AI判断根拠', testId: 'nav-xai' },
+  { href: '/xai', icon: BrainCircuit, label: 'AI判断', testId: 'nav-xai' },
   { href: '/analysis', icon: BarChart, label: '分析', testId: 'nav-analysis' },
   { href: '/simulation', icon: FlaskConical, label: 'シミュレーション', testId: 'nav-simulation' },
   { href: '/alerts', icon: Siren, label: '警報', testId: 'nav-alerts' },

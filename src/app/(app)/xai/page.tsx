@@ -1,18 +1,48 @@
 
 'use client';
 import { Card, CardHeader, CardTitle, CardContent } from '@/components/ui/card';
-import { Bot, CheckCircle2, AlertCircle, Cpu, ShieldCheck, Airplay } from 'lucide-react';
+import { Bot, CheckCircle2, AlertCircle, Cpu, ShieldCheck, Airplay, Lightbulb, Loader2 } from 'lucide-react';
 import { mockRiskAssessments } from '@/lib/data';
+import { Button } from '@/components/ui/button';
+import { useState } from 'react';
+import { generateNextActionAdvice } from '@/ai/flows/generate-next-action-advice';
+import { useToast } from '@/hooks/use-toast';
 
 export default function XAIPage() {
   const selectedRiskAssessment = mockRiskAssessments[3]; // Highest risk for demonstration
+  const [advice, setAdvice] = useState('');
+  const [loading, setLoading] = useState(false);
+  const { toast } = useToast();
+
+  const handleGetAdvice = async () => {
+    setLoading(true);
+    setAdvice('');
+    try {
+        const result = await generateNextActionAdvice({
+            riskScore: selectedRiskAssessment.riskScore,
+            riskCategory: selectedRiskAssessment.riskCategory,
+            location: selectedRiskAssessment.location,
+            analysisDetails: "単変量閾値超過（河川水位）、センサーフュージョン異常、予測モデルとの乖離が確認されています。ICOTによる物理マーカーも水没を検知済みです。"
+        });
+        setAdvice(result.advice);
+    } catch (error) {
+        console.error("Error getting advice:", error);
+        toast({
+            variant: "destructive",
+            title: "アドバイスの生成に失敗しました",
+            description: "AIからのアドバイスの取得中にエラーが発生しました。"
+        });
+    } finally {
+        setLoading(false);
+    }
+  };
 
   return (
     <div className="space-y-6">
        <div>
         <h1 className="text-3xl font-bold font-headline tracking-tight flex items-center gap-2">
           <Bot />
-          AI判断根拠 (XAI)
+          AI判断 (XAI)
         </h1>
         <p className="text-muted-foreground">
           AIによるリスク評価の詳細な根拠と分析レイヤーを確認します。
@@ -109,10 +139,30 @@ export default function XAIPage() {
                   </CardContent>
               </Card>
             </div>
+
+            <Card className="col-span-1 lg:col-span-2">
+                <CardHeader>
+                    <CardTitle className='text-lg flex items-center gap-2'><Lightbulb className='size-5 text-yellow-400'/> IO.net AIアドバイザー</CardTitle>
+                </CardHeader>
+                <CardContent className="space-y-4">
+                    <p className="text-sm text-muted-foreground">
+                        現在のリスク評価に基づき、IO.netの分散コンピューティングリソースを活用して、AIに最適な次のアクションを提案させます。
+                    </p>
+                    <Button onClick={handleGetAdvice} disabled={loading} className="w-full">
+                        {loading ? <Loader2 className="animate-spin" /> : <Bot className="mr-2" />}
+                        AIに次のアクションを提案させる
+                    </Button>
+                    {advice && (
+                        <div className="p-4 bg-muted/50 rounded-lg border">
+                            <h4 className="font-semibold mb-2">AIからの提案:</h4>
+                            <p className="text-sm whitespace-pre-wrap">{advice}</p>
+                        </div>
+                    )}
+                </CardContent>
+            </Card>
+
         </CardContent>
       </Card>
     </div>
   );
 }
-
-    

@@ -20,8 +20,8 @@ const AnalyzeDamageImageInputSchema = z.object({
 export type AnalyzeDamageImageInput = z.infer<typeof AnalyzeDamageImageInputSchema>;
 
 const AnalyzeDamageImageOutputSchema = z.object({
-  analysis: z.string().describe("A textual description of the damage visible in the image."),
-  estimatedDamageLevel: z.enum(['Low', 'Medium', 'High', 'Severe']).describe("The estimated level of damage."),
+  analysis: z.string().describe("画像から視認できる被害状況の日本語による説明。"),
+  estimatedDamageLevel: z.enum(['低い', '中程度', '高い', '深刻']).describe("推定される被害レベル。"),
 });
 export type AnalyzeDamageImageOutput = z.infer<typeof AnalyzeDamageImageOutputSchema>;
 
@@ -33,12 +33,14 @@ const prompt = ai.definePrompt({
   name: 'analyzeDamageImagePrompt',
   input: {schema: AnalyzeDamageImageInputSchema},
   output: {schema: AnalyzeDamageImageOutputSchema},
-  prompt: `You are an expert at analyzing images of disaster scenes to assess damage.
-You will be provided with an image from a disaster area, potentially taken by a drone or a citizen.
-Your task is to analyze the image and provide a structured assessment of the damage.
+  prompt: `あなたは災害現場の画像を分析して被害状況を評価する専門家です。
+ドローンや市民から撮影された災害地域の画像が提供されます。
+あなたのタスクは、画像を分析し、構造化された被害評価を提供することです。
 
-- Provide a concise textual analysis of the visible damage.
-- Estimate the overall damage level (Low, Medium, High, Severe).
+応答は必ず日本語で行ってください。
+
+- 視認できる被害について、簡潔な日本語のテキストで分析を提供してください。
+- 全体的な被害レベルを「低い」「中程度」「高い」「深刻」のいずれかで推定してください。
 
 Photo: {{media url=photoDataUri}}`,
 });

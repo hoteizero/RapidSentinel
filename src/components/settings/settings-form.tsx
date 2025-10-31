@@ -71,22 +71,22 @@ export function SettingsForm() {
   function onSubmit(data: SettingsFormValues) {
     console.log(data);
     toast({
-      title: 'Settings Saved',
-      description: 'Your new settings have been successfully applied.',
+      title: '設定を保存しました',
+      description: '新しい設定が正常に適用されました。',
     });
   }
 
   function handleIntelligenceJob() {
     toast({
-        title: "Intelligence Job Queued",
-        description: `Job ID: job_intel_${Math.random().toString(36).substring(2, 10)} - Your job is being scheduled.`,
+        title: "インテリジェンスジョブをキューに追加しました",
+        description: `Job ID: job_intel_${Math.random().toString(36).substring(2, 10)} - ジョブはスケジュールされています。`,
         });
   }
 
   function handleAgentJob() {
     toast({
-        title: "Automated Job Scheduled",
-        description: `Agent job '${form.getValues('agentJobName')}' has been scheduled.`,
+        title: "自動ジョブをスケジュールしました",
+        description: `エージェントジョブ '${form.getValues('agentJobName')}' がスケジュールされました。`,
     });
   }
 
@@ -95,7 +95,7 @@ export function SettingsForm() {
       <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-8">
         <Card>
           <CardHeader>
-            <CardTitle>AI Engine Component Weights</CardTitle>
+            <CardTitle>AIエンジンコンポーネントの重み</CardTitle>
             <CardDescription>
               各AI分析コンポーネントが最終的なリスクスコアに与える影響の重みを調整します。センサーエラーや通信遅延を検知すると、信頼性の低いコンポーネントの重みは自動的に引き下げられます。
             </CardDescription>
@@ -198,9 +198,9 @@ export function SettingsForm() {
         
         <Card>
           <CardHeader>
-            <CardTitle>AI Risk Thresholds</CardTitle>
+            <CardTitle>AIリスク閾値</CardTitle>
             <CardDescription>
-              Define the risk score thresholds for triggering different alert levels.
+              各アラートレベルを発動させるリスクスコアの閾値を定義します。
             </CardDescription>
           </CardHeader>
           <CardContent className="space-y-8 pt-6">
@@ -210,7 +210,7 @@ export function SettingsForm() {
               render={({ field }) => (
                 <FormItem>
                   <div className="flex justify-between items-center">
-                    <FormLabel>Moderate Risk</FormLabel>
+                    <FormLabel>中リスク</FormLabel>
                     <span className="text-sm font-mono p-1 px-2 rounded-md bg-muted">{field.value}</span>
                   </div>
                   <FormControl>
@@ -232,7 +232,7 @@ export function SettingsForm() {
               render={({ field }) => (
                 <FormItem>
                      <div className="flex justify-between items-center">
-                        <FormLabel>High Risk</FormLabel>
+                        <FormLabel>高リスク</FormLabel>
                         <span className="text-sm font-mono p-1 px-2 rounded-md bg-muted">{field.value}</span>
                     </div>
                   <FormControl>
@@ -254,7 +254,7 @@ export function SettingsForm() {
               render={({ field }) => (
                 <FormItem>
                      <div className="flex justify-between items-center">
-                        <FormLabel>Severe Risk</FormLabel>
+                        <FormLabel>深刻リスク</FormLabel>
                         <span className="text-sm font-mono p-1 px-2 rounded-md bg-muted">{field.value}</span>
                     </div>
                   <FormControl>
@@ -275,8 +275,8 @@ export function SettingsForm() {
 
         <Card>
             <CardHeader>
-                <CardTitle>External Integrations</CardTitle>
-                <CardDescription>Manage connections to Waze and SIP4D.</CardDescription>
+                <CardTitle>外部システム連携</CardTitle>
+                <CardDescription>WazeおよびSIP4D（防災情報共有システム）との接続を管理します。</CardDescription>
             </CardHeader>
             <CardContent className="space-y-6 pt-6">
                 <FormField
@@ -285,9 +285,9 @@ export function SettingsForm() {
                     render={({ field }) => (
                         <FormItem className='flex flex-row items-center justify-between rounded-lg border p-4'>
                              <div className="space-y-0.5">
-                                <FormLabel>Waze for Cities (CCP) Integration</FormLabel>
+                                <FormLabel>Waze for Cities (CCP) 連携</FormLabel>
                                 <FormDescription>
-                                    Incorporate real-time traffic incidents from Waze.
+                                    Wazeからリアルタイムの交通障害情報を取り込みます。
                                 </FormDescription>
                             </div>
                             <FormControl>
@@ -302,9 +302,9 @@ export function SettingsForm() {
                     render={({ field }) => (
                         <FormItem className='flex flex-row items-center justify-between rounded-lg border p-4'>
                              <div className="space-y-0.5">
-                                <FormLabel>SIP4D Integration</FormLabel>
+                                <FormLabel>SIP4D連携</FormLabel>
                                 <FormDescription>
-                                    Share data with the national disaster information platform.
+                                    国の災害情報共有プラットフォームとデータを共有します。
                                 </FormDescription>
                             </div>
                             <FormControl>
@@ -318,9 +318,9 @@ export function SettingsForm() {
 
         <Card>
             <CardHeader>
-                <CardTitle>PoC &amp; Development (IO.net Intelligence API)</CardTitle>
+                <CardTitle>PoC・開発 (IO.net Intelligence API)</CardTitle>
                 <CardDescription>
-                    Rapidly prototype and test models using natural language. This is for non-core, non-judgemental use cases.
+                    自然言語を使用して、モデルの迅速なプロトタイピングとテストを実行します。これは、中核的でない、判断を伴わないユースケース向けです。
                 </CardDescription>
             </CardHeader>
             <CardContent className="space-y-4">
@@ -329,12 +329,12 @@ export function SettingsForm() {
                     name="ioNetPrompt"
                     render={({ field }) => (
                         <FormItem>
-                            <FormLabel>Natural Language Job Prompt</FormLabel>
+                            <FormLabel>自然言語ジョブプロンプト</FormLabel>
                             <FormControl>
-                                <Textarea {...field} placeholder='e.g. "Run Python script analyze.py on 2 A100 GPUs..."' />
+                                <Textarea {...field} placeholder='例: "Run Python script analyze.py on 2 A100 GPUs..."' />
                             </FormControl>
                              <FormDescription>
-                                Describe the one-off analysis job you want to run.
+                                実行したい単発の分析ジョブを記述してください。
                             </FormDescription>
                             <FormMessage />
                         </FormItem>
@@ -345,26 +345,26 @@ export function SettingsForm() {
                     name="ioNetDataSource"
                     render={({ field }) => (
                         <FormItem>
-                            <FormLabel>Data Source</FormLabel>
+                            <FormLabel>データソース</FormLabel>
                             <FormControl>
-                                <Input {...field} placeholder="e.g., s3://bucket-name/data.csv" />
+                                <Input {...field} placeholder="例: s3://bucket-name/data.csv" />
                             </FormControl>
                              <FormDescription>
-                                Provide the path to the data source for the job.
+                                ジョブに使用するデータソースへのパスを指定してください。
                             </FormDescription>
                             <FormMessage />
                         </FormItem>
                     )}
                 />
-                <Button type="button" onClick={handleIntelligenceJob}>Run Intelligence Job</Button>
+                <Button type="button" onClick={handleIntelligenceJob}>インテリジェンスジョブを実行</Button>
             </CardContent>
         </Card>
 
         <Card>
             <CardHeader>
-                <CardTitle>Automated Background Jobs (IO.net Agent API)</CardTitle>
+                <CardTitle>自動バックグラウンドジョブ (IO.net Agent API)</CardTitle>
                 <CardDescription>
-                    Schedule recurring jobs for model retraining and system optimization. This creates a continuous improvement loop without manual intervention.
+                    モデルの再学習やシステム最適化のための定期的なジョブをスケジュールします。これにより、手動介入なしの継続的な改善ループが実現します。
                 </CardDescription>
             </CardHeader>
             <CardContent className="space-y-4">
@@ -373,9 +373,9 @@ export function SettingsForm() {
                     name="agentJobName"
                     render={({ field }) => (
                         <FormItem>
-                            <FormLabel>Job Name</FormLabel>
+                            <FormLabel>ジョブ名</FormLabel>
                             <FormControl>
-                                <Input {...field} placeholder='e.g., "nightly-model-retraining"' />
+                                <Input {...field} placeholder='例: "nightly-model-retraining"' />
                             </FormControl>
                             <FormMessage />
                         </FormItem>
@@ -386,12 +386,12 @@ export function SettingsForm() {
                     name="agentJobSchedule"
                     render={({ field }) => (
                         <FormItem>
-                            <FormLabel>Schedule (Cron Format)</FormLabel>
+                            <FormLabel>スケジュール (Cron形式)</FormLabel>
                             <FormControl>
-                                <Input {...field} placeholder="e.g., 0 2 * * *" />
+                                <Input {...field} placeholder="例: 0 2 * * *" />
                             </FormControl>
                              <FormDescription>
-                               Define when the job should run. The example is for "every day at 2:00 AM".
+                               ジョブの実行タイミングを定義します。例は「毎日午前2時」です。
                             </FormDescription>
                             <FormMessage />
                         </FormItem>
@@ -402,29 +402,31 @@ export function SettingsForm() {
                     name="agentTaskDefinition"
                     render={({ field }) => (
                         <FormItem>
-                            <FormLabel>Task Definition</FormLabel>
+                            <FormLabel>タスク定義</FormLabel>
                             <FormControl>
-                                <Textarea {...field} placeholder='Describe the recurring task...' />
+                                <Textarea {...field} placeholder='定期的なタスクを記述してください...' />
                             </FormControl>
                              <FormDescription>
-                                High-level description of the task for the agent to execute.
+                                エージェントが実行するタスクの概要を記述します。
                             </FormDescription>
                             <FormMessage />
                         </FormItem>
                     )}
                 />
-                <Button type="button" onClick={handleAgentJob}>Schedule Automated Job</Button>
+                <Button type="button" onClick={handleAgentJob}>自動ジョブをスケジュール</Button>
             </CardContent>
         </Card>
 
 
         <div className="flex justify-end">
-            <Button type="submit">Save All Settings</Button>
+            <Button type="submit">すべての設定を保存</Button>
         </div>
       </form>
     </Form>
   );
 }
+
+    
 
     
 

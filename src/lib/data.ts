@@ -1,4 +1,5 @@
-import type { SensorEvent, RiskAssessment, Incident, RiskCategory } from './types';
+
+import type { SensorEvent, RiskAssessment, Incident, RiskCategory, MapData } from './types';
 import { subDays, subHours, subMinutes } from 'date-fns';
 
 const now = new Date();
@@ -103,6 +104,16 @@ export const mockIncidents: Incident[] = [
     lon: 139.6800
   }
 ];
+
+export const mockMapData: MapData[] = [
+    { id: 'map_001', lat: 34.6958, lon: 135.5049, riskScore: 100, riskCategory: 'High', reason: '水位 2450mm のためリスク High', contributingSensor: 'sensor-1-Port_1', trustScore: 0.98 },
+    { id: 'map_002', lat: 34.7007, lon: 135.5047, riskScore: 80, riskCategory: 'High', reason: '水位 8°C のためリスク High', contributingSensor: 'sensor-1-Port_2', trustScore: 0.98 },
+    { id: 'map_003', lat: 34.7007, lon: 135.5053, riskScore: 100, riskCategory: 'High', reason: '水位 540°C のためリスク High', contributingSensor: 'sensor-1-Port_3', trustScore: 0.98 },
+    { id: 'map_004', lat: 34.6943, lon: 135.5093, riskScore: 100, riskCategory: 'High', reason: '水位 2450mm のためリスク High', contributingSensor: 'sensor-1-Port_4', trustScore: 0.98 },
+    { id: 'map_005', lat: 34.6999, lon: 135.5000, riskScore: 75, riskCategory: 'Moderate', reason: '風速 25m/s のためリスク Moderate', contributingSensor: 'sensor-2-Port_1', trustScore: 0.95 },
+    { id: 'map_006', lat: 34.6921, lon: 135.5023, riskScore: 95, riskCategory: 'Severe', reason: '地震動 600gal のためリスク Severe', contributingSensor: 'sensor-3-Port_1', trustScore: 0.99 },
+];
+
 
 export const getRiskCategoryColor = (category: RiskCategory) => {
   switch (category) {

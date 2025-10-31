@@ -1,4 +1,5 @@
 
+
 export type SensorType = "Rain" | "Wind" | "River Level" | "Seismic" | "Camera" | "Acoustic";
 
 export interface ICOTStatus {
@@ -48,4 +49,15 @@ export interface Incident {
   description: string;
   lat: number; // Part of location
   lon: number; // Part of location
+}
+
+export interface MapData {
+    id: string;
+    lat: number;
+    lon: number;
+    riskScore: number;
+    riskCategory: RiskCategory;
+    reason: string;
+    contributingSensor: string;
+    trustScore: number;
 }

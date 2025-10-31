@@ -26,10 +26,12 @@ import {
   FlaskConical,
   BarChart,
   Airplay,
+  Waypoints,
 } from 'lucide-react';
 
 const navItems = [
   { href: '/dashboard', icon: LayoutDashboard, label: 'ダッシュボード', testId: 'nav-dashboard' },
+  { href: '/datamap', icon: Waypoints, label: 'データマップ', testId: 'nav-datamap' },
   { href: '/xai', icon: BrainCircuit, label: 'AI判断', testId: 'nav-xai' },
   { href: '/analysis', icon: BarChart, label: '分析', testId: 'nav-analysis' },
   { href: '/simulation', icon: FlaskConical, label: 'シミュレーション', testId: 'nav-simulation' },

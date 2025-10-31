@@ -22,7 +22,7 @@ export type GenerateRiskAssessmentExplanationInput = z.infer<
 >;
 
 const GenerateRiskAssessmentExplanationOutputSchema = z.object({
-  explanation: z.string().describe('A clear and concise explanation of the risk assessment.'),
+  explanation: z.string().describe('A clear and concise explanation of the risk assessment, in Japanese.'),
 });
 export type GenerateRiskAssessmentExplanationOutput = z.infer<
   typeof GenerateRiskAssessmentExplanationOutputSchema
@@ -38,17 +38,19 @@ const prompt = ai.definePrompt({
   name: 'generateRiskAssessmentExplanationPrompt',
   input: {schema: GenerateRiskAssessmentExplanationInputSchema},
   output: {schema: GenerateRiskAssessmentExplanationOutputSchema},
-  prompt: `You are an AI assistant designed to explain risk assessments to disaster managers.
+  prompt: `あなたは、災害管理者向けにリスク評価を説明するために設計されたAIアシスタントです。
 
-  Based on the provided sensor data, risk score, risk category and contributing sensors, generate a clear and concise explanation of the AI's risk assessment.
-  Highlight the key factors and data sources that contributed to the assessment, so that the disaster manager can understand and trust the AI's judgment.
+提供されたセンサーデータ、リスクスコア、リスクカテゴリ、および寄与しているセンサーに基づき、AIのリスク評価に関する明確かつ簡潔な説明を生成してください。
+災害管理者がAIの判断を理解し、信頼できるように、評価に寄与した主要な要因とデータソースを強調してください。
 
-  Sensor Data: {{{sensorData}}}
-  Risk Score: {{{riskScore}}}
-  Risk Category: {{{riskCategory}}}
-  Contributing Sensors: {{{contributingSensors}}}
+説明は必ず日本語で生成してください。
 
-  Explanation:`,
+Sensor Data: {{{sensorData}}}
+Risk Score: {{{riskScore}}}
+Risk Category: {{{riskCategory}}}
+Contributing Sensors: {{{contributingSensors}}}
+
+Explanation:`,
 });
 
 const generateRiskAssessmentExplanationFlow = ai.defineFlow(

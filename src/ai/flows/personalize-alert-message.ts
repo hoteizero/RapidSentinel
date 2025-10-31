@@ -20,7 +20,7 @@ const PersonalizeAlertMessageInputSchema = z.object({
 export type PersonalizeAlertMessageInput = z.infer<typeof PersonalizeAlertMessageInputSchema>;
 
 const PersonalizeAlertMessageOutputSchema = z.object({
-  personalizedMessage: z.string().describe('The personalized alert message.'),
+  personalizedMessage: z.string().describe('The personalized alert message, in Japanese.'),
 });
 export type PersonalizeAlertMessageOutput = z.infer<typeof PersonalizeAlertMessageOutputSchema>;
 
@@ -32,11 +32,12 @@ const prompt = ai.definePrompt({
   name: 'personalizeAlertMessagePrompt',
   input: {schema: PersonalizeAlertMessageInputSchema},
   output: {schema: PersonalizeAlertMessageOutputSchema},
-  prompt: `You are an expert at personalizing alert messages for disaster situations.
+  prompt: `あなたは災害状況における警報メッセージのパーソナライズを専門としています。
 
-You will be provided with the original alert message, the user's location and role, a list of nearby shelters, and a description of evacuation routes.
+元の警報メッセージ、ユーザーの場所と役割、近くの避難所のリスト、および避難経路の説明が提供されます。
 
-Your goal is to personalize the alert message to be as helpful as possible for the user.
+あなたの目標は、ユーザーにとって可能な限り役立つように警報メッセージをパーソナライズすることです。
+メッセージは必ず日本語で生成してください。
 
 Original Alert Message: {{{alertMessage}}}
 User Location: {{{location}}}

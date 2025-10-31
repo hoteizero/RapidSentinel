@@ -42,7 +42,7 @@ export default function XAIPage() {
        <div>
         <h1 className="text-3xl font-bold font-headline tracking-tight flex items-center gap-2">
           <Bot />
-          AI判断 (XAI)
+          AI判断
         </h1>
         <p className="text-muted-foreground">
           AIによるリスク評価の詳細な根拠と分析レイヤーを確認します。

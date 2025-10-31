@@ -17,7 +17,7 @@ export const mockSensors: SensorEvent[] = [
 export const mockRiskAssessments: RiskAssessment[] = [
   {
     id: 'alert_001',
-    location: 'Shibuya River Area',
+    location: '渋谷川エリア',
     time: subMinutes(now, 5).toISOString(),
     riskScore: 85,
     riskCategory: 'High',
@@ -28,7 +28,7 @@ export const mockRiskAssessments: RiskAssessment[] = [
   },
   {
     id: 'alert_002',
-    location: 'Coastal Area C',
+    location: '海岸エリアC',
     time: subHours(now, 1).toISOString(),
     riskScore: 62,
     riskCategory: 'Moderate',
@@ -39,7 +39,7 @@ export const mockRiskAssessments: RiskAssessment[] = [
   },
   {
     id: 'alert_003',
-    location: 'Downtown District',
+    location: '中心市街地',
     time: subDays(now, 1).toISOString(),
     riskScore: 30,
     riskCategory: 'Low',
@@ -50,7 +50,7 @@ export const mockRiskAssessments: RiskAssessment[] = [
   },
     {
     id: 'alert_004',
-    location: 'Area D',
+    location: 'D地区',
     time: subDays(now, 2).toISOString(),
     riskScore: 95,
     riskCategory: 'Severe',

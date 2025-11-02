@@ -1,3 +1,4 @@
+
 import type {NextConfig} from 'next';
 
 const nextConfig: NextConfig = {
@@ -29,6 +30,13 @@ const nextConfig: NextConfig = {
         pathname: '/**',
       },
     ],
+  },
+  serverActions: {
+    bodySizeLimit: '4.5mb',
+  },
+  webpack: (config) => {
+    config.resolve.exportsFields = [];
+    return config;
   },
 };
 

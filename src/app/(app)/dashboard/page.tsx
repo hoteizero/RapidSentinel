@@ -1,7 +1,6 @@
 
 'use client';
 import { useState } from 'react';
-import { DisasterMap } from '@/components/dashboard/disaster-map';
 import { RecentAlertsCard } from '@/components/dashboard/recent-alerts-card';
 import { mockIncidents, mockRiskAssessments, mockSensors } from '@/lib/data';
 import type { RiskAssessment, SensorEvent, Incident } from '@/lib/types';
@@ -10,6 +9,10 @@ import { Card, CardHeader, CardTitle, CardContent } from '@/components/ui/card';
 import { Info, BarChart, Bot, Waypoints } from 'lucide-react';
 import { ResponsiveContainer, LineChart, CartesianGrid, XAxis, YAxis, Tooltip, Legend, Line, Bar, ComposedChart } from 'recharts';
 import { ActionFooter } from '@/components/layout/action-footer';
+import dynamic from 'next/dynamic';
+
+const CesiumMap = dynamic(() => import('@/components/dashboard/cesium-map'), { ssr: false });
+
 
 const timeSeriesData = [
   { time: '6h ago', 水位: 4.2, 雨量: 5, ICOT状態: 0 },
@@ -37,7 +40,7 @@ export default function DashboardPage() {
             {/* Left Pane */}
             <aside className="w-[30%] flex flex-col gap-4 p-4 border-r bg-muted/20">
                 <div className="h-[55%] rounded-lg overflow-hidden shadow-md">
-                <DisasterMap sensors={mockSensors} incidents={mockIncidents} alerts={mockRiskAssessments} onSelectItem={handleSelectItem} />
+                <CesiumMap />
                 </div>
                 <div className='h-[45%]'>
                     <RecentAlertsCard alerts={mockRiskAssessments} onSelectAlert={handleSelectItem} />
@@ -55,8 +58,8 @@ export default function DashboardPage() {
                                 </CardHeader>
                                 <CardContent className='text-sm space-y-2'>
                                     <p><span className='font-semibold'>ID:</span> {selectedRiskAssessment.id.replace('alert', 'ICOT')}</p>
-                                    <p><span className='font-semibold'>名称:</span> マンホール（海岸通3丁目）</p>
-                                    <p><span className='font-semibold'>設備情報:</span> 下水道幹線・口径1200mm・設置年：2018</p>
+                                    <p><span className='font-semibold'>名称:</span> {selectedRiskAssessment.id === 'alert_004' ? 'マンホール（海岸通3丁目）' : 'マンホール（サンプル）'}</p>
+                                    <p><span className='font-semibold'>設備情報:</span> {selectedRiskAssessment.id === 'alert_004' ? '下水道幹線・口径1200mm・設置年：2018' : 'N/A'}</p>
                                     <p className='text-xs text-muted-foreground pt-2'>{selectedRiskAssessment.location}</p>
                                 </CardContent>
                             </Card>
@@ -67,7 +70,7 @@ export default function DashboardPage() {
                                 <CardContent>
                                      <p className='font-bold text-xl mb-3'>浸水リスク: <span className='text-red-500'>{selectedRiskAssessment.riskScore}%</span> (信頼度: <span className='text-blue-400'>{selectedRiskAssessment.trustScore ? `${(selectedRiskAssessment.trustScore * 100).toFixed(0)}%` : 'N/A'})</span></p>
                                      <p className='text-muted-foreground text-sm'>
-                                        AIの多層的な分析により、リスクが「{selectedRiskAssessment.riskCategory}」と判断されました。詳細は「AI判断根拠」ページで確認してください。
+                                        AIの多層的な分析により、リスクが「{selectedRiskAssessment.riskCategory}」と判断されました。詳細は「AI判断」ページで確認してください。
                                      </p>
                                 </CardContent>
                             </Card>

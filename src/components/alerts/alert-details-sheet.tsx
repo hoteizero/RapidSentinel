@@ -1,5 +1,5 @@
 'use client';
-import { useState } from 'react';
+import { useState, useRef } from 'react';
 import {
   Sheet,
   SheetContent,
@@ -19,10 +19,12 @@ import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@
 import { getRiskCategoryColor, mockSensors } from '@/lib/data';
 import type { RiskAssessment } from '@/lib/types';
 import { format } from 'date-fns';
-import { Bot, Lightbulb, MessageSquareQuote, Loader2 } from 'lucide-react';
+import { Bot, Lightbulb, MessageSquareQuote, Loader2, Send, Volume2, Pause } from 'lucide-react';
 import { summarizeAlertReasoning } from '@/ai/flows/summarize-alert-reasoning';
 import { generateRiskAssessmentExplanation } from '@/ai/flows/generate-risk-assessment-explanation';
 import { personalizeAlertMessage } from '@/ai/flows/personalize-alert-message';
+import { generateSpeech } from '@/ai/flows/generate-speech';
+import { useToast } from '@/hooks/use-toast';
 
 
 type AlertDetailsSheetProps = {
@@ -35,16 +37,21 @@ type LoadingState = {
     summary: boolean;
     explanation: boolean;
     personalization: boolean;
+    speech: boolean;
 }
 
 export function AlertDetailsSheet({ alert, open, onOpenChange }: AlertDetailsSheetProps) {
-    const [loading, setLoading] = useState<LoadingState>({ summary: false, explanation: false, personalization: false });
+    const { toast } = useToast();
+    const [loading, setLoading] = useState<LoadingState>({ summary: false, explanation: false, personalization: false, speech: false });
     const [summary, setSummary] = useState('');
     const [explanation, setExplanation] = useState('');
     const [personalizedMessage, setPersonalizedMessage] = useState('');
+    const [audioUrl, setAudioUrl] = useState<string | null>(null);
+    const [isPlaying, setIsPlaying] = useState(false);
+    const audioRef = useRef<HTMLAudioElement | null>(null);
     
     const [role, setRole] = useState('citizen');
-    const [location, setLocation] = useState('123 Main St, Anytown');
+    const [location, setLocation] = useState('東京都渋谷区恵比寿1-1-1');
 
     const handleGenerateSummary = async () => {
         if (!alert) return;
@@ -64,7 +71,7 @@ export function AlertDetailsSheet({ alert, open, onOpenChange }: AlertDetailsShe
             setSummary(result.summary);
         } catch (e) {
             console.error(e);
-            setSummary("Failed to generate summary.");
+            setSummary("要約の生成に失敗しました。");
         } finally {
             setLoading(prev => ({...prev, summary: false}));
         }
@@ -86,7 +93,7 @@ export function AlertDetailsSheet({ alert, open, onOpenChange }: AlertDetailsShe
             setExplanation(result.explanation);
         } catch (e) {
             console.error(e);
-            setExplanation("Failed to generate explanation.");
+            setExplanation("説明の生成に失敗しました。");
         } finally {
             setLoading(prev => ({...prev, explanation: false}));
         }
@@ -101,17 +108,81 @@ export function AlertDetailsSheet({ alert, open, onOpenChange }: AlertDetailsShe
                 alertMessage: `A ${alert.riskCategory} risk alert (score: ${alert.riskScore}) has been issued for ${alert.location}.`,
                 location: location,
                 role: role,
-                nearbyShelters: "Central Community Center (2 miles away), North High School (3.5 miles away)",
-                evacuationRoutes: "Main Street is the primary evacuation route. Avoid River Road due to potential flooding.",
+                nearbyShelters: "中央コミュニティセンター (2km先), 北高校 (3.5km先)",
+                evacuationRoutes: "主要な避難経路はメインストリートです。リバーロードは浸水の可能性があるため避けてください。",
             });
             setPersonalizedMessage(result.personalizedMessage);
         } catch (e) {
             console.error(e);
-            setPersonalizedMessage("Failed to generate personalized message.");
+            setPersonalizedMessage("パーソナライズメッセージの生成に失敗しました。");
         } finally {
             setLoading(prev => ({...prev, personalization: false}));
         }
     }
+
+    const handleGenerateSpeech = async () => {
+        if (!personalizedMessage) {
+            toast({
+                variant: 'destructive',
+                title: '読み上げるメッセージがありません',
+                description: '先にパーソナライズされたメッセージを生成してください。',
+            });
+            return;
+        }
+        setLoading(prev => ({ ...prev, speech: true }));
+        setAudioUrl(null);
+        if (audioRef.current) {
+            audioRef.current.pause();
+            audioRef.current = null;
+        }
+        setIsPlaying(false);
+
+        try {
+            const audioDataUri = await generateSpeech(personalizedMessage);
+            setAudioUrl(audioDataUri);
+            const audio = new Audio(audioDataUri);
+            audioRef.current = audio;
+            audio.play();
+            setIsPlaying(true);
+            audio.onended = () => setIsPlaying(false);
+        } catch (error) {
+            console.error('音声生成エラー:', error);
+            toast({
+                variant: 'destructive',
+                title: '音声生成に失敗しました',
+                description: 'メッセージを音声に変換できませんでした。',
+            });
+        } finally {
+            setLoading(prev => ({ ...prev, speech: false }));
+        }
+    };
+
+    const togglePlayPause = () => {
+        if (audioRef.current) {
+            if (isPlaying) {
+                audioRef.current.pause();
+            } else {
+                audioRef.current.play();
+            }
+            setIsPlaying(!isPlaying);
+        }
+    };
+
+
+    const handleNotifyPublic = () => {
+        if (!personalizedMessage) {
+            toast({
+                variant: 'destructive',
+                title: 'メッセージがありません',
+                description: '先にパーソナライズされたメッセージを生成してください。',
+            });
+            return;
+        }
+        toast({
+            title: '住民向けアプリに通知を送信しました',
+            description: `"${personalizedMessage.substring(0, 50)}..."`,
+        });
+    };
 
   if (!alert) return null;
 
@@ -130,14 +201,14 @@ export function AlertDetailsSheet({ alert, open, onOpenChange }: AlertDetailsShe
                 <div className='flex items-center gap-4'>
                     <div className='text-4xl font-bold font-mono' style={{color: getRiskCategoryColor(alert.riskCategory)}}>{alert.riskScore}</div>
                     <div>
-                        <div className="text-sm text-muted-foreground">Risk Score</div>
+                        <div className="text-sm text-muted-foreground">リスクスコア</div>
                         <Badge className="text-white" style={{ backgroundColor: getRiskCategoryColor(alert.riskCategory) }}>
                             {alert.riskCategory}
                         </Badge>
                     </div>
                 </div>
                 <div>
-                     <h4 className="text-sm font-semibold mb-2">Contributing Sensors</h4>
+                     <h4 className="text-sm font-semibold mb-2">関連センサー</h4>
                      <div className='flex flex-wrap gap-1'>
                         {alert.contributingSensors.map(id => (
                             <Badge key={id} variant="secondary">{mockSensors.find(s => s.sensorId === id)?.name || id}</Badge>
@@ -152,65 +223,87 @@ export function AlertDetailsSheet({ alert, open, onOpenChange }: AlertDetailsShe
 
             <Card>
                 <CardHeader>
-                    <CardTitle className="text-lg flex items-center gap-2"><Bot /> AI-Powered Insights</CardTitle>
+                    <CardTitle className="text-lg flex items-center gap-2"><Bot /> AIによる洞察</CardTitle>
                 </CardHeader>
                 <CardContent className='space-y-6'>
                     {/* Summarize Reasoning */}
                     <div className='space-y-2'>
                         <div className="flex justify-between items-center">
-                            <Label htmlFor="summary">Alert Reasoning Summary</Label>
+                            <Label htmlFor="summary">警報理由の要約</Label>
                             <Button size="sm" onClick={handleGenerateSummary} disabled={loading.summary} data-testid="gen-summary-button">
                                 {loading.summary ? <Loader2 className="animate-spin" /> : <MessageSquareQuote />}
-                                Generate Summary
+                                要約を生成
                             </Button>
                         </div>
-                        <Textarea id="summary" value={summary} readOnly placeholder='Click "Generate Summary" to get an AI-powered summary...' />
+                        <Textarea id="summary" value={summary} readOnly placeholder='「要約を生成」をクリックしてAIによる要約を取得...' />
                     </div>
 
                     {/* Explain Assessment */}
                      <div className='space-y-2'>
                         <div className="flex justify-between items-center">
-                            <Label htmlFor="explanation">Risk Assessment Explanation</Label>
+                            <Label htmlFor="explanation">リスク評価の説明</Label>
                             <Button size="sm" onClick={handleGenerateExplanation} disabled={loading.explanation} data-testid="gen-explanation-button">
                                 {loading.explanation ? <Loader2 className="animate-spin" /> : <Lightbulb />}
-                                Explain Assessment
+                                評価を説明
                             </Button>
                         </div>
-                        <Textarea id="explanation" value={explanation} readOnly placeholder='Click "Explain Assessment" for a detailed breakdown...' />
+                        <Textarea id="explanation" value={explanation} readOnly placeholder='「評価を説明」をクリックして詳細な内訳を表示...' />
                     </div>
 
                      {/* Personalize Message */}
                     <div className='space-y-4 pt-4 border-t'>
-                         <Label>Personalize Alert Message</Label>
+                         <Label>通知メッセージのパーソナライズ</Label>
                          <div className="grid grid-cols-2 gap-4">
                             <div className="space-y-2">
-                                <Label htmlFor="role" className="text-xs">User Role</Label>
+                                <Label htmlFor="role" className="text-xs">ユーザーの役割</Label>
                                 <Select onValueChange={setRole} defaultValue={role}>
                                     <SelectTrigger id="role" data-testid="personalize-role-select"><SelectValue /></SelectTrigger>
                                     <SelectContent>
-                                        <SelectItem value="citizen">Citizen</SelectItem>
-                                        <SelectItem value="fire_fighter">Fire Fighter</SelectItem>
-                                        <SelectItem value="police_officer">Police Officer</SelectItem>
+                                        <SelectItem value="citizen">市民</SelectItem>
+                                        <SelectItem value="fire_fighter">消防士</SelectItem>
+                                        <SelectItem value="police_officer">警察官</SelectItem>
                                     </SelectContent>
                                 </Select>
                             </div>
                             <div className="space-y-2">
-                                <Label htmlFor="location" className="text-xs">User Location</Label>
+                                <Label htmlFor="location" className="text-xs">ユーザーの場所</Label>
                                 <Input id="location" value={location} onChange={e => setLocation(e.target.value)} data-testid="personalize-location-input" />
                             </div>
                          </div>
                         <Button className="w-full" onClick={handlePersonalizeMessage} disabled={loading.personalization} data-testid="gen-personalization-button">
                             {loading.personalization ? <Loader2 className="animate-spin" /> : null}
-                            Generate Personalized Message
+                            パーソナライズされたメッセージを生成
                         </Button>
-                        <Textarea value={personalizedMessage} readOnly placeholder='Generated personalized message will appear here...' />
+                        <Textarea value={personalizedMessage} readOnly placeholder='生成されたパーソナライズメッセージがここに表示されます...' />
+                        
+                        <div className="flex gap-2">
+                            <Button
+                                variant="outline"
+                                className="w-full"
+                                onClick={handleGenerateSpeech}
+                                disabled={loading.speech || !personalizedMessage}
+                            >
+                                {loading.speech ? <Loader2 className="animate-spin" /> : <Volume2 />}
+                                メッセージ読み上げ
+                            </Button>
+                            {audioUrl && (
+                                <Button variant="ghost" size="icon" onClick={togglePlayPause}>
+                                    {isPlaying ? <Pause /> : <Volume2 />}
+                                </Button>
+                            )}
+                        </div>
+
+                        <Button variant="outline" className="w-full" onClick={handleNotifyPublic}>
+                            <Send className="mr-2" />
+                            住民向けアプリに通知
+                        </Button>
                     </div>
                 </CardContent>
             </Card>
 
         </div>
         <SheetFooter className="p-6 border-t">
-          <Button onClick={() => onOpenChange(false)}>Close</Button>
+          <Button onClick={() => onOpenChange(false)}>閉じる</Button>
         </SheetFooter>
         </div>
       </SheetContent>

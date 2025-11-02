@@ -6,17 +6,21 @@ import {
   DropdownMenuLabel,
   DropdownMenuSeparator,
   DropdownMenuTrigger,
+  DropdownMenuSub,
+  DropdownMenuSubTrigger,
+  DropdownMenuSubContent,
 } from '@/components/ui/dropdown-menu';
 import { Button } from '@/components/ui/button';
 import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar';
 import { SidebarTrigger } from '@/components/ui/sidebar';
-import { LogOut, Settings, User, Radio, Wifi, Satellite } from 'lucide-react';
+import { LogOut, Settings, User, Radio, Wifi, Satellite, Languages, Building } from 'lucide-react';
 import { useState, useEffect } from 'react';
 import { format } from 'date-fns';
 import { ja } from 'date-fns/locale';
 
 export function Header() {
     const [time, setTime] = useState<Date | null>(null);
+    const [language, setLanguage] = useState('JA');
 
     useEffect(() => {
         setTime(new Date());
@@ -46,6 +50,18 @@ export function Header() {
          <div className='flex items-center gap-2'><Satellite className='size-4 text-gray-500'/> 衛星: 待機</div>
       </div>
 
+      <DropdownMenu>
+        <DropdownMenuTrigger asChild>
+          <Button variant="ghost" size="icon">
+            <Languages />
+          </Button>
+        </DropdownMenuTrigger>
+        <DropdownMenuContent align="end">
+          <DropdownMenuItem onSelect={() => setLanguage('JA')}>日本語 {language === 'JA' && '✔'}</DropdownMenuItem>
+          <DropdownMenuItem onSelect={() => setLanguage('EN')}>English {language === 'EN' && '✔'}</DropdownMenuItem>
+          <DropdownMenuItem onSelect={() => setLanguage('ZH')}>中文 {language === 'ZH' && '✔'}</DropdownMenuItem>
+        </DropdownMenuContent>
+      </DropdownMenu>
 
       <DropdownMenu>
         <DropdownMenuTrigger asChild>
@@ -66,6 +82,17 @@ export function Header() {
             </div>
           </DropdownMenuLabel>
           <DropdownMenuSeparator />
+           <DropdownMenuSub>
+            <DropdownMenuSubTrigger>
+              <Building className="mr-2" />
+              自治体を切り替え
+            </DropdownMenuSubTrigger>
+            <DropdownMenuSubContent>
+              <DropdownMenuItem>市区町村サンプル (現在)</DropdownMenuItem>
+              <DropdownMenuItem>隣接自治体A</DropdownMenuItem>
+              <DropdownMenuItem>広域連携本部</DropdownMenuItem>
+            </DropdownMenuSubContent>
+          </DropdownMenuSub>
           <DropdownMenuItem>
             <User className="mr-2" />
             プロフィール

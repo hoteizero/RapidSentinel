@@ -34,10 +34,10 @@ export function AlertsTable({ alerts }: AlertsTableProps) {
           <Table>
             <TableHeader>
               <TableRow>
-                <TableHead>Location</TableHead>
-                <TableHead>Risk Category</TableHead>
-                <TableHead className="text-center">Score</TableHead>
-                <TableHead>Time</TableHead>
+                <TableHead>場所</TableHead>
+                <TableHead>リスクカテゴリ</TableHead>
+                <TableHead className="text-center">スコア</TableHead>
+                <TableHead>発生日時</TableHead>
               </TableRow>
             </TableHeader>
             <TableBody>
@@ -54,7 +54,7 @@ export function AlertsTable({ alerts }: AlertsTableProps) {
                   </TableCell>
                   <TableCell className="text-center font-mono">{alert.riskScore}</TableCell>
                   <TableCell>
-                    {format(new Date(alert.time), "yyyy-MM-dd HH:mm:ss")}
+                    {format(new Date(alert.time), "yyyy/MM/dd HH:mm")}
                   </TableCell>
                 </TableRow>
               ))}

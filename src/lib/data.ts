@@ -1,4 +1,5 @@
-import type { SensorEvent, RiskAssessment, Incident, RiskCategory } from './types';
+
+import type { SensorEvent, RiskAssessment, Incident, RiskCategory, MapData } from './types';
 import { subDays, subHours, subMinutes } from 'date-fns';
 
 const now = new Date();
@@ -17,45 +18,45 @@ export const mockSensors: SensorEvent[] = [
 export const mockRiskAssessments: RiskAssessment[] = [
   {
     id: 'alert_001',
-    location: 'Shibuya River Area',
+    location: '渋谷川エリア',
     time: subMinutes(now, 5).toISOString(),
     riskScore: 85,
     riskCategory: 'High',
     contributingSensors: ['sensor_003', 'sensor_004', 'sensor_008'],
-    explanation: 'Heavy rainfall (25mm/h) combined with high river levels (4.8m and 5.9m) indicate a high probability of localized flooding near Shibuya River. The rate of rise in river level is critical.',
+    explanation: '激しい降雨（25mm/h）と高い河川水位（4.8mおよび5.9m）が組み合わさり、渋谷川周辺での局所的な洪水の可能性が高いことを示しています。河川水位の上昇速度が危機的です。',
     icotStatus: { recognized: true, color_state: 'RED', pattern_integrity: 0.98, last_seen_by: 'drone-03' },
     trustScore: 0.92,
   },
   {
     id: 'alert_002',
-    location: 'Coastal Area C',
+    location: '海岸エリアC',
     time: subHours(now, 1).toISOString(),
     riskScore: 62,
     riskCategory: 'Moderate',
     contributingSensors: ['sensor_002'],
-    explanation: 'Sustained high wind speeds (15.2 m/s) pose a moderate risk to temporary structures and may cause power outages. No other significant sensor readings.',
+    explanation: '持続的な強風（15.2 m/s）が仮設構造物に中程度のリスクをもたらし、停電を引き起こす可能性があります。他の重要なセンサー測定値はありません。',
     icotStatus: { recognized: true, color_state: 'TRANSPARENT', pattern_integrity: 1.0, last_seen_by: 'camera-12' },
     trustScore: 0.75,
   },
   {
     id: 'alert_003',
-    location: 'Downtown District',
+    location: '中心市街地',
     time: subDays(now, 1).toISOString(),
     riskScore: 30,
     riskCategory: 'Low',
     contributingSensors: ['sensor_005'],
-    explanation: 'Minor seismic activity detected, but well below thresholds for structural damage. All other sensors report normal conditions.',
+    explanation: '軽微な地震活動が検出されましたが、構造的損傷の閾値を大幅に下回っています。他のすべてのセンサーは正常な状態を報告しています。',
     icotStatus: { recognized: true, color_state: 'TRANSPARENT', pattern_integrity: 1.0, last_seen_by: 'manual-check' },
     trustScore: 0.95,
   },
     {
     id: 'alert_004',
-    location: 'Area D',
+    location: 'D地区',
     time: subDays(now, 2).toISOString(),
     riskScore: 95,
     riskCategory: 'Severe',
     contributingSensors: ['sensor_003', 'sensor_004', 'sensor_008'],
-    explanation: 'Critical risk of flash flooding. Extreme rainfall and river levels surpassing historical highs. Immediate action required.',
+    explanation: '鉄砲水のリスクが極めて高い状態です。記録的な降雨量と河川水位が過去最高を超えています。即時の対応が必要です。',
     icotStatus: { recognized: true, color_state: 'RED', pattern_integrity: 0.99, last_seen_by: 'drone-01' },
     trustScore: 0.98,
   },
@@ -103,6 +104,16 @@ export const mockIncidents: Incident[] = [
     lon: 139.6800
   }
 ];
+
+export const mockMapData: MapData[] = [
+    { id: 'map_001', lat: 34.6958, lon: 135.5049, riskScore: 100, riskCategory: 'High', reason: '水位 2450mm のためリスク High', contributingSensor: 'sensor-1-Port_1', trustScore: 0.98 },
+    { id: 'map_002', lat: 34.7007, lon: 135.5047, riskScore: 80, riskCategory: 'High', reason: '水位 8°C のためリスク High', contributingSensor: 'sensor-1-Port_2', trustScore: 0.98 },
+    { id: 'map_003', lat: 34.7007, lon: 135.5053, riskScore: 100, riskCategory: 'High', reason: '水位 540°C のためリスク High', contributingSensor: 'sensor-1-Port_3', trustScore: 0.98 },
+    { id: 'map_004', lat: 34.6943, lon: 135.5093, riskScore: 100, riskCategory: 'High', reason: '水位 2450mm のためリスク High', contributingSensor: 'sensor-1-Port_4', trustScore: 0.98 },
+    { id: 'map_005', lat: 34.6999, lon: 135.5000, riskScore: 75, riskCategory: 'Moderate', reason: '風速 25m/s のためリスク Moderate', contributingSensor: 'sensor-2-Port_1', trustScore: 0.95 },
+    { id: 'map_006', lat: 34.6921, lon: 135.5023, riskScore: 95, riskCategory: 'Severe', reason: '地震動 600gal のためリスク Severe', contributingSensor: 'sensor-3-Port_1', trustScore: 0.99 },
+];
+
 
 export const getRiskCategoryColor = (category: RiskCategory) => {
   switch (category) {

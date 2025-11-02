@@ -27,7 +27,7 @@ export type SummarizeAlertReasoningInput = z.infer<typeof SummarizeAlertReasonin
 const SummarizeAlertReasoningOutputSchema = z.object({
   summary: z
     .string()
-    .describe("A concise, human-readable summary of the alert's reasoning, including key contributing factors and sensor data."),
+    .describe("A concise, human-readable summary of the alert's reasoning, in Japanese."),
 });
 
 export type SummarizeAlertReasoningOutput = z.infer<typeof SummarizeAlertReasoningOutputSchema>;
@@ -42,18 +42,20 @@ const prompt = ai.definePrompt({
   name: 'summarizeAlertReasoningPrompt',
   input: {schema: SummarizeAlertReasoningInputSchema},
   output: {schema: SummarizeAlertReasoningOutputSchema},
-  prompt: `You are an AI assistant summarizing disaster alerts for operators.
+  prompt: `あなたは防災担当者向けに災害警報を要約するAIアシスタントです。
 
-  Given the following information about an alert, create a concise summary (1-2 sentences) explaining the reasoning behind the alert. Focus on the most critical contributing factors and sensor data. Make the summary easy to understand for a human operator who needs to quickly assess the situation.
+警報に関する以下の情報に基づき、警報の根拠を説明する簡潔な要約（1～2文）を作成してください。最も重要な要因とセンサーデータに焦点を当ててください。人間のオペレーターが状況を迅速に評価できるよう、要約は分かりやすくしてください。
 
-  Risk Category: {{{riskCategory}}}
-  Risk Score: {{{riskScore}}}
-  Location: {{{location}}}
-  Time: {{{time}}}
-  Sensor Data: {{{sensorData}}}
- Explanation: {{{explanation}}}
+要約は必ず日本語で生成してください。
 
-  Summary:`,
+Risk Category: {{{riskCategory}}}
+Risk Score: {{{riskScore}}}
+Location: {{{location}}}
+Time: {{{time}}}
+Sensor Data: {{{sensorData}}}
+Explanation: {{{explanation}}}
+
+Summary:`,
 });
 
 const summarizeAlertReasoningFlow = ai.defineFlow(

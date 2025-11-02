@@ -22,14 +22,24 @@ import {
   Book,
   BrainCircuit,
   Server,
+  BookText,
+  FlaskConical,
+  BarChart,
+  Airplay,
+  Waypoints,
 } from 'lucide-react';
 
 const navItems = [
   { href: '/dashboard', icon: LayoutDashboard, label: 'ダッシュボード', testId: 'nav-dashboard' },
-  { href: '/xai', icon: BrainCircuit, label: 'AI判断根拠', testId: 'nav-xai' },
+  { href: '/datamap', icon: Waypoints, label: 'データマップ', testId: 'nav-datamap' },
+  { href: '/xai', icon: BrainCircuit, label: 'AI判断', testId: 'nav-xai' },
+  { href: '/analysis', icon: BarChart, label: '分析', testId: 'nav-analysis' },
+  { href: '/simulation', icon: FlaskConical, label: 'シミュレーション', testId: 'nav-simulation' },
   { href: '/alerts', icon: Siren, label: '警報', testId: 'nav-alerts' },
   { href: '/sensors', icon: RadioTower, label: 'センサー', testId: 'nav-sensors' },
+  { href: '/drones', icon: Airplay, label: 'ドローン・フリート', testId: 'nav-drones' },
   { href: '/status', icon: Server, label: 'システム状態', testId: 'nav-status' },
+  { href: '/reports', icon: BookText, label: 'レポート', testId: 'nav-reports' },
   { href: '/settings', icon: Settings, label: '設定', testId: 'nav-settings' },
 ];
 

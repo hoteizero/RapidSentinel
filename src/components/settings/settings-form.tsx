@@ -22,6 +22,9 @@ import { useToast } from '@/hooks/use-toast';
 import { Separator } from '../ui/separator';
 import { Textarea } from '../ui/textarea';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '../ui/select';
+import { scheduleAgentJob, submitIntelligenceJob } from '@/services/io_net';
+import { useState } from 'react';
+import { Loader2 } from 'lucide-react';
 
 const settingsSchema = z.object({
   trendAnalysisWeight: z.number().min(0).max(100),
@@ -46,6 +49,12 @@ type SettingsFormValues = z.infer<typeof settingsSchema>;
 
 export function SettingsForm() {
   const { toast } = useToast();
+  const [loading, setLoading] = useState({
+    intelligence: false,
+    agent: false,
+    save: false
+  });
+
   const form = useForm<SettingsFormValues>({
     resolver: zodResolver(settingsSchema),
     defaultValues: {
@@ -68,26 +77,77 @@ export function SettingsForm() {
     },
   });
 
-  function onSubmit(data: SettingsFormValues) {
+  async function onSubmit(data: SettingsFormValues) {
+    setLoading(prev => ({...prev, save: true}));
     console.log(data);
+    await new Promise(resolve => setTimeout(resolve, 1000)); // Simulate API call
     toast({
       title: '設定を保存しました',
       description: '新しい設定が正常に適用されました。',
     });
+    setLoading(prev => ({...prev, save: false}));
   }
 
-  function handleIntelligenceJob() {
-    toast({
-        title: "インテリジェンスジョブをキューに追加しました",
-        description: `Job ID: job_intel_${Math.random().toString(36).substring(2, 10)} - ジョブはスケジュールされています。`,
+  async function handleIntelligenceJob() {
+    setLoading(prev => ({...prev, intelligence: true}));
+    try {
+        const prompt = form.getValues('ioNetPrompt');
+        const dataSource = form.getValues('ioNetDataSource');
+        if (!prompt || !dataSource) {
+            toast({
+                variant: 'destructive',
+                title: '入力エラー',
+                description: 'プロンプトとデータソースの両方を入力してください。',
+            });
+            return;
+        }
+        const result = await submitIntelligenceJob(prompt, dataSource);
+        toast({
+            title: "IO.netインテリジェンスジョブを送信しました",
+            description: `ジョブID: ${result.job_id} - ステータス: ${result.status}`,
         });
+    } catch (error: any) {
+        toast({
+            variant: 'destructive',
+            title: "ジョブの送信に失敗しました",
+            description: error.message || "IO.net APIとの通信中にエラーが発生しました。",
+        });
+    } finally {
+        setLoading(prev => ({...prev, intelligence: false}));
+    }
   }
 
-  function handleAgentJob() {
-    toast({
-        title: "自動ジョブをスケジュールしました",
-        description: `エージェントジョブ '${form.getValues('agentJobName')}' がスケジュールされました。`,
-    });
+  async function handleAgentJob() {
+    setLoading(prev => ({...prev, agent: true}));
+    try {
+        const jobName = form.getValues('agentJobName');
+        const schedule = form.getValues('agentJobSchedule');
+        const taskDefinition = form.getValues('agentTaskDefinition');
+
+        if (!jobName || !schedule || !taskDefinition) {
+            toast({
+                variant: 'destructive',
+                title: '入力エラー',
+                description: 'ジョブ名、スケジュール、タスク定義をすべて入力してください。',
+            });
+            return;
+        }
+
+        const result = await scheduleAgentJob(jobName, schedule, taskDefinition);
+        toast({
+            title: "IO.net自動ジョブをスケジュールしました",
+            description: `ジョブ '${result.job_name}' がスケジュールされました。`,
+        });
+
+    } catch (error: any) {
+         toast({
+            variant: 'destructive',
+            title: "ジョブのスケジュールに失敗しました",
+            description: error.message || "IO.net APIとの通信中にエラーが発生しました。",
+        });
+    } finally {
+        setLoading(prev => ({...prev, agent: false}));
+    }
   }
 
   return (
@@ -356,7 +416,10 @@ export function SettingsForm() {
                         </FormItem>
                     )}
                 />
-                <Button type="button" onClick={handleIntelligenceJob}>インテリジェンスジョブを実行</Button>
+                <Button type="button" onClick={handleIntelligenceJob} disabled={loading.intelligence}>
+                    {loading.intelligence && <Loader2 className="mr-2 h-4 w-4 animate-spin" />}
+                    インテリジェンスジョブを実行
+                </Button>
             </CardContent>
         </Card>
 
@@ -413,21 +476,21 @@ export function SettingsForm() {
                         </FormItem>
                     )}
                 />
-                <Button type="button" onClick={handleAgentJob}>自動ジョブをスケジュール</Button>
+                <Button type="button" onClick={handleAgentJob} disabled={loading.agent}>
+                    {loading.agent && <Loader2 className="mr-2 h-4 w-4 animate-spin" />}
+                    自動ジョブをスケジュール
+                </Button>
             </CardContent>
         </Card>
 
 
         <div className="flex justify-end">
-            <Button type="submit">すべての設定を保存</Button>
+            <Button type="submit" disabled={loading.save}>
+                {loading.save && <Loader2 className="mr-2 h-4 w-4 animate-spin" />}
+                すべての設定を保存
+            </Button>
         </div>
       </form>
     </Form>
   );
 }
-
-    
-
-    
-
-    

@@ -1,117 +1,49 @@
-// next.config.ts
-import type { NextConfig } from 'next';
-import path from 'path';
-import CopyPlugin from 'copy-webpack-plugin';
+// next.config.js
+const path = require('path');
 
-/**
- * ✅ Next.js 15 対応・Turbopack動作確認済み設定
- * - TypeScript / ESLint エラーを無視（開発時のみ）
- * - 画像ホスト許可
- * - Cesium ビルド対応
- * - rbush / zip.js 解決補正
- * - Genkit external 化
- * - Firebase Hosting 用に output: 'standalone'
- */
+/** @type {import('next').NextConfig} */
+const nextConfig = {
+  webpack: (config) => {
+    // Cesium のアセット（Workers, Assets, Widgets）を正しく静的ファイルとして扱う
+    config.module.rules.push({
+      test: /cesium[\/\\]Build[\/\\]Cesium[\/\\].*\.(js|css|json|png|jpg|svg|woff|woff2|eot|ttf|bin)$/,
+      type: 'asset/resource',
+      generator: {
+        filename: 'static/cesium/[path][name].[hash][ext]',
+      },
+    });
 
-const nextConfig: NextConfig = {
-  // --- TypeScript & ESLint ---
-  typescript: {
-    ignoreBuildErrors: true, // ⚠ 開発中のみ推奨
-  },
-  eslint: {
-    ignoreDuringBuilds: true, // ⚠ 開発中のみ推奨
-  },
+    // 一般的なアセット（画像、フォント、WASMなど）
+    config.module.rules.push({
+      test: /\.(png|jpg|gif|svg|woff|woff2|eot|ttf|bin|wasm)$/,
+      type: 'asset/resource',
+    });
 
-  // --- 画像ホスト許可 ---
-  images: {
-    remotePatterns: [
-      { protocol: 'https', hostname: 'placehold.co', pathname: '/**' },
-      { protocol: 'https', hostname: 'images.unsplash.com', pathname: '/**' },
-      { protocol: 'https', hostname: 'picsum.photos', pathname: '/**' },
-    ],
-  },
-
-  // --- Webpack 設定 ---
-  webpack: (config, { isServer, dev }) => {
-    // ① Turbopack競合防止
-    config.resolve.exportsFields = [];
-
-    // ② Genkit external化（server側のみ）
-    if (isServer) {
-      config.externals = config.externals || [];
-      config.externals.push('genkit', '@genkit-ai/google-genai');
-    }
-
-    // ③ Cesium: ワーカー & アセットコピー
-    if (!config.plugins) {
-      config.plugins = [];
-    }
-    config.plugins.push(
-      new CopyPlugin({
-        patterns: [
-          {
-            from: path.join(
-              path.dirname(require.resolve('cesium')),
-              'Build/Cesium/Workers'
-            ),
-            to: '../public/static/cesium/Workers',
-          },
-          {
-            from: path.join(
-              path.dirname(require.resolve('cesium')),
-              'Build/Cesium/Assets'
-            ),
-            to: '../public/static/cesium/Assets',
-          },
-          {
-            from: path.join(
-              path.dirname(require.resolve('cesium')),
-              'Build/Cesium/Widgets'
-            ),
-            to: '../public/static/cesium/Widgets',
-          },
-          {
-            from: path.join(
-              path.dirname(require.resolve('cesium')),
-              'Build/Cesium/ThirdParty'
-            ),
-            to: '../public/static/cesium/ThirdParty',
-          },
-        ],
-      })
-    );
-    
-
-    // ④ rbush: default export補正
+    // Cesium のエイリアス設定（型定義の重複やパス解決を安定化）
     config.resolve.alias = {
       ...config.resolve.alias,
-      rbush: path.resolve(__dirname, 'node_modules/rbush/rbush.min.js'),
+      cesium: path.resolve(__dirname, 'node_modules/cesium/Source'),
     };
 
-    // ⑤ zip.js: worker fallback無効化
-    config.resolve.fallback = {
-      ...config.resolve.fallback,
-      '@zip.js/zip.js/lib/zip-no-worker.js': false,
-      '@zip.js/zip.js/lib/zip-no-worker-inflate.js': false,
-    };
-    
-    config.amd = {
-      ...config.amd,
-      toUrlUndefined: true,
-    };
+    // WebAssembly ファイル名のカスタマイズ（ハッシュ衝突回避）
+    config.output.webassemblyModuleFilename = 'static/wasm/[modulehash].wasm';
 
     return config;
   },
 
-  // --- Firebase Hosting対応 ---
-  output: 'standalone',
+  // Cesium をトランスパイル対象に追加（ES6+ コードを Next.js が処理できるように）
+  transpilePackages: ['cesium'],
 
-  // --- Server Actions Body Size (Next.js 15対応) ---
+  // 実験的機能：ESM 外部モジュールの緩和（Cesium の動的インポート対応）
   experimental: {
-    serverActions: {
-      bodySizeLimit: '4.5mb',
-    },
+    esmExternals: 'loose',
   },
+
+  // 開発時の Fast Refresh でのエラー抑制（オプション）
+  // onDemandEntries: {
+  //   maxInactiveAge: 1000 * 60 * 60,
+  //   pagesBufferLength: 50,
+  // },
 };
 
-export default nextConfig;
+module.exports = nextConfig;
